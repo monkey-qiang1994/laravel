@@ -1,0 +1,35 @@
+@extends('home.layouts.public')
+<title>@yield('title','联系我们')</title>
+
+@section('main')
+	<div class="content inner">
+		<section class="panel__div clearfix">
+			<div class="filter-value">
+				<div class="filter-title">用户反馈调查</div>
+			</div>
+			<form action="" class="issues-box form-horizontal">
+				<p>尊敬的用户：</p>
+				<p>您好！为了给您提供更好的服务，我们希望收集您使用U袋网的看法或建议，对您的配合和支持表示衷心感谢！</p>
+				<div class="form-group">
+					<div class="col-xs-6">
+						<input type="password" class="form-control" id="inputPassword" placeholder="姓名">
+					</div>
+					<div class="col-xs-6">
+						<input type="password" class="form-control" id="inputPassword" placeholder="电话号码">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-12">
+						<textarea class="form-control" rows="5" placeholder="请输入您的看法或建议"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-5">
+						<button type="submit" class="btn btn-block btn-primary">提交</button>
+					</div>
+				</div>
+			</form>
+		</section>
+	</div>
+@endsection
+	
