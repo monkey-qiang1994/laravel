@@ -72,20 +72,20 @@
 </header>
 <aside class="Hui-aside">
 	<div class="menu_dropdown bk_2">
-		<dl id="menu-article">
-			<dt><i class="Hui-iconfont">&#xe616;</i> 资讯管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+	<dl id="menu-article">
+			<dt><i class="Hui-iconfont">&#xe616;</i> 公告管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd>
 				<ul>
-					<li><a data-href="/adminx/article_list" data-title="资讯管理" href="javascript:void(0)">资讯管理</a></li>
+					<li><a data-href="/adminx/article_list" data-title="资讯管理" href="javascript:void(0)">公告管理</a></li>
 			</ul>
 		</dd>
 	</dl>
 		<dl id="menu-picture">
-			<dt><i class="Hui-iconfont">&#xe613;</i> 图片管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dt><i class="Hui-iconfont">&#xe613;</i> 轮播图管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd>
 				<ul>
-					<li><a data-href="/adminx/picture_list" data-title="图片管理" href="javascript:void(0)">图片管理</a></li>
-					<li><a data-href="/adminx/picture_list" data-title="图片管理" href="javascript:void(0)">轮播图管理</a></li>
+					
+					<li><a data-href="/adminx/ads" data-title="轮播图管理" href="javascript:void(0)">轮播图管理</a></li>
 			</ul>
 		</dd>
 	</dl>
@@ -105,13 +105,25 @@
 					<li><a data-href="/adminx/product_brand" data-title="品牌管理" href="javascript:void(0)">品牌管理</a></li>
 					<li><a data-href="/adminx/product_category" data-title="分类管理" href="javascript:void(0)">分类管理</a></li>
 					<li><a data-href="/adminx/product_list" data-title="产品管理" href="javascript:void(0)">产品管理</a></li>
+					<li><a data-href="/adminx/product_attribute" data-title="产品属性" href="javascript:void(0)">产品属性</a></li>
 			</ul>
 		</dd>
 	</dl>
-		<dl id="menu-product">
+	<dl id="menu-product">
+			<dt><i class="Hui-iconfont">&#xe620;</i> 订单管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a data-href="/adminx/order_list" data-title="订单管理" href="javascript:void(0)">订单管理</a></li>
+					<li><a data-href="/adminx/comment" data-title="评论列表" href="javascript:;">评论列表</a></li>
+
+
+			</ul>
+		</dd>
+	<dl id="menu-product">
 			<dt><i class="Hui-iconfont">&#xe620;</i> 优惠券<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd>
 				<ul>
+					<li><a data-href="/adminx/coupon_make" data-title="优惠券生成" href="javascript:void(0)">优惠券生成</a></li>
 					<li><a data-href="/adminx/coupon" data-title="优惠券管理" href="javascript:void(0)">优惠券管理</a></li>
 			</ul>
 		</dd>

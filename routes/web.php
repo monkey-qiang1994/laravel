@@ -14,7 +14,6 @@
 
 /********************前端路由***********************/
 
-
 //首页
 Route::resource('/','Home\IndexController');
 
@@ -24,8 +23,10 @@ Route::resource('/login','Home\LoginController');
 //商品列表页面
 Route::resource('/list','Home\ProductListController');
 
-//商品内页
-Route::resource('/details','Home\ProductDetailsController');
+//Q商品内页
+Route::get('/details/{id}','Home\ProductDetailsController@index');
+//Q商品内页 添加商品到购物车
+Route::get('/addCart','Home\ProductDetailsController@addCart');
 
 //购物车页面
 Route::resource('/cart','Home\CartController');
@@ -74,6 +75,10 @@ Route::group(['prefix'=>'adminx'],function(){
 	Route::resource('/product_category','Admin\Product_categoryController');
 	//产品管理
 	Route::resource('/product_list','Admin\Product_listController');
+	//Q产品图片删除
+	Route::get('/product_img_del','Admin\Product_listController@delete');
+	//Q产品属性
+	Route::resource('/product_attribute','Admin\Product_attributeController');
 	//评论列表
 	Route::resource('/comment','Admin\CommentController');
 	//意见反馈
@@ -106,5 +111,30 @@ Route::group(['prefix'=>'adminx'],function(){
 	Route::resource('/links','Admin\LinksController');
 	//优惠券管理
 	Route::resource('/coupon','Admin\CouponController');
+
+	//w公告管理
+	Route::resource('/article_list','Admin\Article_listController');
+	//w优惠券管理
+	Route::resource('/coupon','Admin\CouponController');
+	//订单管理
+	Route::resource('/order_list','Admin\Order_listController');
+	//w订单用户
+	Route::get('/order_user','Admin\Order_listController@user');
+	//w订单详情
+	Route::get('/order_detail','Admin\Order_listController@detail');
+	//w评论用户
+	Route::get('/comment_user','Admin\CommentController@user');
+	//w轮播图管理
+	Route::resource('/ads','Admin\AdsController');
+	//w审核
+	Route::get('/review','Admin\Article_listController@review');
+	//w公告详情
+	Route::get('/article_detail','Admin\Article_listController@detail');
+	//w优惠券生成
+	Route::resource('/coupon_make','Admin\Coupon_makeController');
+	//w优惠间发送
+	Route::get('/coupon_send','Admin\Coupon_makeController@send');
+	//w优惠券执行发送
+	Route::post('/coupon_dosend','Admin\Coupon_makeController@dosend');
 
 });

@@ -16,6 +16,13 @@
 	<script src="/home/js/global.js" charset="UTF-8"></script>
 	<script src="/home/js/jquery.DJMask.2.1.1.js" charset="UTF-8"></script>
 	@show
+	<!-- 导航栏样式 -->
+	<link rel="stylesheet" href="/home/css/menu/style.css">
+	<!--
+	<script src="/home/js/menu/jquery-latest.min.js" charset="UTF-8"></script>
+	<script src="/home/js/menu/script.js" charset="UTF-8"></script>
+	-->
+	
 	<title>@yield('title')</title>
 </head>
 <body>
@@ -58,7 +65,7 @@
 			</div>
 			<div class="cart-box">
 				<a href="/cart" class="cart-but">
-					<i class="iconfont icon-shopcart cr fz16"></i> 购物车 0 件
+					<i class="iconfont icon-shopcart cr fz16"></i> 购物车 {{$cart_num}} 件
 				</a>
 			</div>
 		</div>
@@ -66,7 +73,7 @@
 	<!-- 首页导航栏 -->
 	<div class="top-nav bg3">
 		<div class="nav-box inner">
-			<ul class="nva-list">
+			<!-- <ul class="nva-list">
 				<a href="http://www.laravel.com/"><li class="active">首页</li></a>
 				<a href="/list"><li>商品列表</li></a>
 				<a href="temp_article/udai_article5.html"><li>新手上路</li></a>
@@ -74,7 +81,52 @@
 				<a href="enterprise_id.html"><li>企业账号</li></a>
 				<a href="udai_contract.html"><li>诚信合约</li></a>
 				<a href="/contact"><li>联系我们</li></a>
+			</ul> -->
+		
+		<div id='nav-menu'>
+			<ul>
+				<li><a href="http://www.laravel.com/">首页</a></li>
+				@foreach($cate as $k=>$row)
+
+				<!-- 判断是否有子类 -->
+				@if(count($row->sub))
+				   <li class='active has-sub'>
+				 @else
+				 	<li>
+				 @endif
+				<!-- 判断结束 -->
+
+				   <a href='/list/{{$row->cate_id}}'>{{$row->cate_name}}</a>
+				   	@if(count($row->sub))
+				      <ul>
+				      	@foreach($row->sub as $rows)
+
+				      	<!-- 判断是否有子类 -->
+				      	@if(count($rows->sub))
+				         <li class='has-sub'>
+				        @else
+				         <li>
+				        @endif
+						<!-- 判断结束 -->
+
+				         <a href='/list/{{$rows->cate_id}}'>{{$rows->cate_name}}</a>
+				         	@if(count($rows->sub))
+				            <ul>
+				            	@foreach($rows->sub as $rowss)
+				               <li><a href='/list/{{$rowss->cate_id}}'>{{$rowss->cate_name}}</a></li>
+				               	@endforeach
+				            </ul>
+				            @endif
+				         </li>
+				         @endforeach
+				      </ul>
+				    @endif
+				   </li>
+				@endforeach
+				<li><a href="/contact">联系我们</a></li>
 			</ul>
+		</div>
+
 		</div>
 	</div>
 	@section('main')
@@ -137,4 +189,20 @@
 		</div>
 	</div>
 </body>
+
+<script type="text/javascript">
+chi = $('.one');
+
+for(i=0;i<chi.length;i++){
+
+	if(chi[i].children){
+		chi[i].addClass('active has-sub');
+	}
+	console.log(i);	
+}	
+chi[1].find('ul').addClass("has-sub");
+// console.log(chi[0].children);
+
+</script>
+
 </html>

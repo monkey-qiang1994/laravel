@@ -15,7 +15,7 @@ class CommentController extends Controller
     public function index()
     {
         //评论列表
-        return view('admin.comment');
+        return view('admin.order.comment');
 
     }
 
@@ -83,5 +83,15 @@ class CommentController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    /**
+     * 评论用户
+     */
+    public function user()
+    {
+        //用户
+        return view('admin.order.order_user');
     }
 }

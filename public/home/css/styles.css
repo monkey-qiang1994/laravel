@@ -548,24 +548,24 @@ body {overflow-y: scroll}
 }
 .floor-2 .floor-title {
 	background: #fdd4b3;
-	background: -webkit-linear-gradient(to right, #fdd4b3, #dab190);
-	background:    -moz-linear-gradient(to right, #fdd4b3, #dab190);
-	background:      -o-linear-gradient(to right, #fdd4b3, #dab190);
-	background:         linear-gradient(to right, #fdd4b3, #dab190);
+	background: -webkit-linear-gradient(to right, #171520, #444852);
+	background:    -moz-linear-gradient(to right, #171520, #444852);
+	background:      -o-linear-gradient(to right, #171520, #444852);
+	background:         linear-gradient(to right, #171520, #444852);
 }
 .floor-3 .floor-title {
 	background: #6dd5ed;
-	background: -webkit-linear-gradient(to right, #6dd5ed, #29abcc);
-	background:    -moz-linear-gradient(to right, #6dd5ed, #29abcc);
-	background:      -o-linear-gradient(to right, #6dd5ed, #29abcc);
-	background:         linear-gradient(to right, #6dd5ed, #29abcc);
+	background: -webkit-linear-gradient(to right, #1585de, #44b6f6);
+	background:    -moz-linear-gradient(to right, #1585de, #44b6f6);
+	background:      -o-linear-gradient(to right, #1585de, #44b6f6);
+	background:         linear-gradient(to right, #1585de, #44b6f6);
 }
 .floor-4 .floor-title {
 	background: #ffb7d4;
-	background: -webkit-linear-gradient(to right, #ffb7d4, #f168a1);
-	background:    -moz-linear-gradient(to right, #ffb7d4, #f168a1);
-	background:      -o-linear-gradient(to right, #ffb7d4, #f168a1);
-	background:         linear-gradient(to right, #ffb7d4, #f168a1);
+	background: -webkit-linear-gradient(to right, #fb3759, #ff133c);
+	background:    -moz-linear-gradient(to right, #fb3759, #ff133c);
+	background:      -o-linear-gradient(to right, #fb3759, #ff133c);
+	background:         linear-gradient(to right, #fb3759, #ff133c);
 }
 .floor-5 .floor-title {
 	background: #00cdac;
@@ -738,7 +738,7 @@ body {overflow-y: scroll}
 .breadcrumb > li a {color: #333;text-decoration: none}
 .breadcrumb > .active {color: #b31e22}
 /* 商品详情 */
-.item-show__div > .pull-left {width: 1000px}
+.item-show__div > .pull-left {width: 1000px; margin-top: 40px;}
 .item-show__div > .pull-right {width: 200px}
 .item-show__head > .pull-right {height: 600px}
 .item-show__body > .pull-left {min-height: 800px}
@@ -975,7 +975,7 @@ body {overflow-y: scroll}
 }
 .item-action__basket {
 	color: #fff !important;
-	float: right;
+	float: left;
 	background-color: #b31e22;
 	border: 1px solid #b31e22;
 }

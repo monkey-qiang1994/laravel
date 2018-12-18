@@ -18,6 +18,8 @@
 	<script src="/home/js/global.js" charset="UTF-8"></script>
 	<script src="/home/js/login.js" charset="UTF-8"></script>
 	<script src="/home/js/jquery.DJMask.2.1.1.js" charset="UTF-8"></script>
+
+	
 	@endsection
 
 	@section('main')
