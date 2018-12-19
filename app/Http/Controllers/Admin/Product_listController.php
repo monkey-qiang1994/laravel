@@ -237,4 +237,26 @@ class Product_listController extends Controller
             return redirect('/adminx/product_list')->with("error",'产品删除失败');
         }
     }
+
+    //更新产品的状态
+    public function display(Request $request){
+        $data = $request->except('_token');
+
+        if(DB::table('products')->where('product_id','=',$data['id'])->update(['display'=>$data['display']])){
+            return redirect('/adminx/product_list')->with("success",'产品上下架更新成功!');
+        }else{
+            return redirect('/adminx/product_list')->with("error",'产品上下架更新失败!');
+        }
+    }
+
+    //ajax批量删除
+    public function delall(Request $request){
+        $id = $request->input('a');
+        foreach($id as $key=>$v){
+            DB::table('products')->where('product_id','=',$v)->delete();
+        }
+
+        echo 1;
+    }
+
 }

@@ -1256,7 +1256,7 @@
 
 	//ajax将产品添加到数据库中
 	//用户ID
-	user = "<?php echo Session::get('user_id',0)?>";
+	user = "<?php echo Session::get('user_id',false)?>";
 	num = $('.amount-input').val();
 	id = $('.product_id').val();
 	
@@ -1272,11 +1272,15 @@
 		random=Math.random();
 
 		$.get('/addCart?random='+random,{data:data},function(res){
-			alert(res);
-			// if(res==1){
-			// 	$('#addBox').show().delay(1500).fadeOut();
-			// 	location.reload();
-			// }
+
+			if(res==1){
+				$('#addBox').show().delay(1500).fadeOut();
+				location.reload();
+			}else if(res==3){
+				alert('您还未登录,请先登录!');
+				window.location.href='http://www.laravel.com/login/create';
+			}
+
 		});
 	}
 	

@@ -1,0 +1,1 @@
+<a href="http://www.laravel.com/jihuo?user_id={{$id}}&token={{$token}}">激活</a>

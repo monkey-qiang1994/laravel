@@ -42,7 +42,7 @@ class ProductDetailsController extends Controller
 
         //取出跟产品关联的图片信息
         $images = DB::table('products_images')->where('product_id','=',$id)->get();
-
+        ;
         //加载模版
         return view('home.product_details',['product'=>$product,'att_list'=>$att_list,'cate_att'=>$cate_att,'images'=>$images,'recommend'=>$recommend]);
     }
@@ -50,24 +50,41 @@ class ProductDetailsController extends Controller
     public function addCart(Request $request){
         $data = $request->input('data');
 
+        if($data[0] == null){
+            echo 3;exit;
+        }
+
+
         $add['user_id'] = $data[0];
         $add['product_id'] = $data[1];
         $add['product_num'] = $data[2];
-        $add['product_att'] = '颜色:'.$data[3].' 尺码:'.$data[4];
 
-        echo json_encode($add);exit;
+        if(empty($data[3])){
+            $add['product_att'] = '尺码:'.$data[4];
+        }elseif(empty($data[4])){
+            $add['product_att'] = '颜色:'.$data[3];
+        }else{
+            $add['product_att'] = '颜色:'.$data[3].' 尺码:'.$data[4];
+        }
+
+
         //获取cart表中已有的数据
         $db = DB::table('cart')->where('user_id','=',$add['user_id'])->get();
-        //数据可能是多条,所以需要遍历
-        foreach($db as $d){
-            $product_id[] = $d->product_id;
-            $product_att[] = $d->product_att;
-        }
+
+        
+
+            //数据可能是多条,所以需要遍历
+            foreach($db as $d){
+                $product_id[] = $d->product_id;
+                $product_att[] = $d->product_att;
+            }
+
+        
         //把遍历出来的内容拿来和ajax传过来的内容做比较,
         //如果产品ID和产品属性跟数据表中的某一条值匹配上说明就是在原有的基础上做数量的增加,
         //原有基础上递增我用了increment方法,反之就是添加新产品到cart表中
-        if(in_array($add['product_id'],$product_id) and in_array($add['product_att'],$product_att)){
-
+        if($db != '[]' and in_array($add['product_id'],$product_id) and in_array($add['product_att'],$product_att)){
+           
             if(DB::table('cart')
                 ->where([
                     ['product_id','=',$add['product_id']],
@@ -81,7 +98,7 @@ class ProductDetailsController extends Controller
             }
 
         }else{
-
+    
             if(DB::table('cart')->insert($add)){
                 echo 1;
             }else{

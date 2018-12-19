@@ -18,11 +18,10 @@
 	<script src="/home/js/global.js" charset="UTF-8"></script>
 	<script src="/home/js/login.js" charset="UTF-8"></script>
 	<script src="/home/js/jquery.DJMask.2.1.1.js" charset="UTF-8"></script>
-
-	
 	@endsection
 
 	@section('main')
+	<!-- 登录页面 -->
 	<div style="background:url(/home/images/login_bg.jpg) no-repeat center center; ">
 		<div class="login-layout container">
 			<div class="form-box login">
@@ -30,7 +29,9 @@
 					<h2>欢迎登录U袋网平台</h2>
 				</div>
 				<div class="tabs_container">
-					<form class="tabs_form" action="" method="post" id="login_form">
+				
+					<form class="tabs_form" action="/login" method="post" id="login_form">
+					{{csrf_field()}}
 						<div class="form-group">
 							<div class="input-group">
 								<div class="input-group-addon">
@@ -55,18 +56,21 @@
 	                        <a href="javascript:;" class="pull-right" id="resetpwd">忘记密码？</a>
 	                    </div>
 	                    <!-- 错误信息 -->
+	                    @if(session('error'))
 						<div class="form-group">
 							<div class="error_msg" id="login_error">
-								<!-- 错误信息 范例html
+								<!-- 错误信息 范例html -->
 								<div class="alert alert-warning alert-dismissible fade in" role="alert">
 									<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<strong>密码错误</strong> 请重新输入密码
+									<strong>{{session('error')}}</strong>
 								</div>
-								 -->
+								
 							</div>
 						</div>
-	                    <button class="btn btn-large btn-primary btn-lg btn-block submit" id="login_submit" type="button">登录</button><br>
-	                    <p class="text-center">没有账号？<a href="javascript:;" id="register">免费注册</a></p>
+						@endif
+						
+	                    <button class="btn btn-large btn-primary btn-lg btn-block submit" id="login_submit" type="submit">登录</button><br>
+	                    <p class="text-center">没有账号？<a href="javascript:void(0);" id="register">免费注册</a></p>
                     </form>
                     <div class="tabs_div">
 	                    <div class="success-box">
@@ -87,26 +91,35 @@
                     </div>
                 </div>
 			</div>
-			<div class="form-box register">
+			<!-- 注册页面 -->
+			<div class="form-box register" style="display:none;">
   				<div class="tabs-nav">
   					<h2>欢迎注册<a href="javascript:;" class="pull-right fz16" id="reglogin">返回登录</a></h2>
   				</div>
   				<div class="tabs_container">
-					<form class="tabs_form" action="index.html" method="post" id="register_form">
+  				@if(session('error'))
+					{{session('error')}}
+  				@endif
+					<form class="tabs_form" action="/register" method="post" id="register_form">
+					{{csrf_field()}}
+						<div class="form-group">
+							<div class="input-group">
+								<div class="input-group-addon">用户名</div>
+								<input class="form-control " name="username" required placeholder="用户名"  type="text">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="input-group">
+								<div class="input-group-addon">邮箱</div>
+								<input class="form-control " name="email" class="register_phone" required placeholder="邮箱" type="email">
+							</div>
+						</div>
 						<div class="form-group">
 							<div class="input-group">
 								<div class="input-group-addon">
 									<span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
 								</div>
-								<input class="form-control phone" name="phone" id="register_phone" required placeholder="手机号" maxlength="11" autocomplete="off" type="text">
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="input-group">
-								<input class="form-control" name="smscode" id="register_sms" placeholder="输入验证码" type="text">
-								<span class="input-group-btn">
-									<button class="btn btn-primary getsms" type="button">发送短信验证码</button>
-								</span>
+								<input class="form-control phone zhuce" name="phone" required placeholder="手机号" type="text" style='width:150px;'><span></span>
 							</div>
 						</div>
 						<div class="form-group">
@@ -118,16 +131,24 @@
 								<div class="input-group-addon pwd-toggle" title="显示密码"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></div>
 							</div>
 						</div>
-						<div class="checkbox">
-	                        <label>
-	                        	<input checked="" id="register_checkbox" type="checkbox"><i></i> 同意<a href="temp_article/udai_article3.html">U袋网用户协议</a>
-	                        </label>
-	                    </div>
-	                    <!-- 错误信息 -->
+
 						<div class="form-group">
-							<div class="error_msg" id="register_error"></div>
+							<div class="input-group">
+								<div class="input-group-addon">确认密码</div>
+								<input class="form-control " name="repassword" required placeholder="确认密码"  type="password">
+							</div>
 						</div>
-	                    <button class="btn btn-large btn-primary btn-lg btn-block submit" id="register_submit" type="button">注册</button>
+						<div class="form-group" style='width:180px;float:left'>
+							<div class="input-group">
+								<div class="input-group-addon">验证码</div>
+								<input class="form-control " name="code" required placeholder=""  type="text">
+							</div>
+						</div>
+						<img src="/code" onclick="this.src=this.src+'?a=1'" style="float:left;margin-left:10px">
+						
+						
+	                  
+	                    <button class="btn btn-large btn-primary btn-lg btn-block submit" id="register_submit" type="submit">注册</button>
                     </form>
                     <div class="tabs_div">
 	                    <div class="success-box">
@@ -148,42 +169,26 @@
                     </div>
                 </div>
 			</div>
-			<div class="form-box resetpwd">
+			<!-- 重置密码页面 -->
+			<div class="form-box resetpwd" style="display:none;">
   				<div class="tabs-nav clearfix">
   					<h2>找回密码<a href="javascript:;" class="pull-right fz16" id="pwdlogin">返回登录</a></h2>
   				</div>
   				<div class="tabs_container">
-					<form class="tabs_form" action="https://rpg.blue/member.php?mod=logging&action=login" method="post" id="resetpwd_form">
+					<form class="tabs_form" action="/forget" method="post" id="resetpwd_form">
 						<div class="form-group">
 							<div class="input-group">
-								<div class="input-group-addon">
-									<span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
-								</div>
-								<input class="form-control phone" name="phone" id="resetpwd_phone" required placeholder="手机号" maxlength="11" autocomplete="off" type="text">
+								<div class="input-group-addon">邮箱</div>
+								<input class="form-control " name="email" class="register_phone" required placeholder="邮箱" type="email">
 							</div>
 						</div>
-						<div class="form-group">
-							<div class="input-group">
-								<input class="form-control" name="sms" id="resetpwd_sms" placeholder="输入验证码" type="text">
-								<span class="input-group-btn">
-									<button class="btn btn-primary getsms" type="button">发送短信验证码</button>
-								</span>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="input-group">
-								<div class="input-group-addon">
-									<span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-								</div>
-								<input class="form-control password" name="password" id="resetpwd_pwd" placeholder="新的密码" autocomplete="off" type="password">
-								<div class="input-group-addon pwd-toggle" title="显示密码"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></div>
-							</div>
-						</div>
+						{{csrf_field()}}
+					
 	                    <!-- 错误信息 -->
 						<div class="form-group">
 							<div class="error_msg" id="resetpwd_error"></div>
 						</div>
-	                    <button class="btn btn-large btn-primary btn-lg btn-block submit" id="resetpwd_submit" type="button">重置密码</button>
+	                    <button class="btn btn-large btn-primary btn-lg btn-block submit" id="resetpwd_submit" type="submit">重置密码</button>
                     </form>
                     <div class="tabs_div">
 	                    <div class="success-box">
@@ -205,6 +210,29 @@
                 </div>
 			</div>
 			<script>
+			//获取手机号 绑定失去焦点事件
+			$('.zhuce').blur(function(){
+				//获取手机号
+				h=$(this);//ajax里不能用$(this)
+				p=$(this).val();
+				//正则匹配 match 匹配不到的话 返回null
+				if(p.match(/^\d{11}$/)==null){
+					$(this).next("span").css("color",'red').html('手机号码不合法');
+				}else{
+					//判断手机号码是否重复
+					$.get("/checkphone",{p:p},function(data){
+						// alert(data);
+						if(data==1){
+							// 手机号码已注册
+							h.next("span").css("color",'red').html('手机号已注册');
+						}else{
+							//手机号码可以使用
+							h.next("span").css("color",'green').html('手机号可注册');
+						}
+					});
+				}
+			});
+
 				$(document).ready(function() {
 					// 判断直接进入哪个页面 例如 login.php?p=register
 					switch($.getUrlParam('p')) {

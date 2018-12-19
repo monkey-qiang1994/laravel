@@ -132,7 +132,7 @@
 
 			<span class="select-box">
 				<select name="status" class="select">
-					<option value="">请选择状态</option>
+					<option value="0">请选择状态</option>
 					<option value="1" @if(old('status') == 1) selected @endif>爆款推荐</option>
 					<option value="2" @if(old('status') == 2) selected @endif>新品直达</option>
 					<option value="3" @if(old('status') == 3) selected @endif>畅销产品</option>

@@ -20,6 +20,25 @@ Route::resource('/','Home\IndexController');
 //登陆注册页面
 Route::resource('/login','Home\LoginController');
 
+//C提交注册
+Route::post('/register','Home\RegisterController@register');
+//C测试邮件发送 普通字符串
+Route::get("/send","Home\RegisterController@send");
+//C测试邮件发送 发送视图
+Route::get("/send1","Home\RegisterController@sendMail");
+//C验证码测试
+Route::get("/code","Home\RegisterController@code");
+//C激活
+Route::get('/jihuo',"Home\RegisterController@jihuo");
+//密码找回
+Route::post('/forget',"Home\LoginController@forget");
+//C重置密码
+Route::get('/reset','Home\LoginController@reset');
+//C执行密码重置
+Route::post('/doreset','Home\LoginController@doreset');
+//C判断手机号是否重复
+Route::get('/checkphone','Home\RegisterController@checkphone');
+
 //商品列表页面
 Route::resource('/list','Home\ProductListController');
 
@@ -27,6 +46,9 @@ Route::resource('/list','Home\ProductListController');
 Route::get('/details/{id}','Home\ProductDetailsController@index');
 //Q商品内页 添加商品到购物车
 Route::get('/addCart','Home\ProductDetailsController@addCart');
+
+//Q友情链接页面
+Route::resource('/links','Home\LinksController');
 
 //购物车页面
 Route::resource('/cart','Home\CartController');
@@ -60,7 +82,9 @@ Route::group(['prefix' => 'user'],function(){
 
 /********************后端路由***********************/
 
-Route::group(['prefix'=>'adminx'],function(){
+Route::resource('adminlogin','Admin\AdminloginController');
+
+Route::group(['prefix'=>'adminx','middleware'=>'adminlogin'],function(){
 	//主文件
 	Route::resource('/','Admin\HomePageController');
 	//欢迎界面
@@ -75,6 +99,10 @@ Route::group(['prefix'=>'adminx'],function(){
 	Route::resource('/product_category','Admin\Product_categoryController');
 	//产品管理
 	Route::resource('/product_list','Admin\Product_listController');
+	//Q产品状态更新
+	Route::post('/product_display','Admin\Product_listController@display');
+	//Q产品批量删除
+	Route::get('/delall','Admin\Product_listController@delall');
 	//Q产品图片删除
 	Route::get('/product_img_del','Admin\Product_listController@delete');
 	//Q产品属性

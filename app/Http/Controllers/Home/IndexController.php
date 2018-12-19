@@ -20,7 +20,7 @@ class IndexController extends Controller
         ->join('brand','products.brand_id','=','brand.brand_id')
         ->select('products.*','products_images.product_img','brand.brand_name')
         ->groupBy('products.product_id')
-        ->where('products.status','=',1)
+        ->where([['products.status','=',1],['products.display','=',0]])
         ->take(6)
         ->get();
 
@@ -30,7 +30,7 @@ class IndexController extends Controller
         ->join('brand','products.brand_id','=','brand.brand_id')
         ->select('products.*','products_images.product_img','brand.brand_name')
         ->groupBy('products.product_id')
-        ->where('products.status','=',2)
+        ->where([['products.status','=',2],['products.display','=',0]])
         ->take(8)
         ->get();
 
@@ -40,7 +40,7 @@ class IndexController extends Controller
         ->join('brand','products.brand_id','=','brand.brand_id')
         ->select('products.*','products_images.product_img','brand.brand_name')
         ->groupBy('products.product_id')
-        ->where('products.status','=',3)
+        ->where([['products.status','=',3],['products.display','=',0]])
         ->take(8)
         ->get();
 
@@ -50,7 +50,7 @@ class IndexController extends Controller
         ->join('brand','products.brand_id','=','brand.brand_id')
         ->select('products.*','products_images.product_img','brand.brand_name')
         ->groupBy('products.product_id')
-        ->where('products.discount_price','!=','')
+        ->where([['products.discount_price','!=',''],['products.display','=',0]])
         ->take(8)
         ->get();
 

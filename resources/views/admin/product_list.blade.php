@@ -31,14 +31,6 @@
       <input type="text" name="" id="" placeholder=" 产品名称" style="width:250px" class="input-text">
       <button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜产品</button>
     </div>
-    <!-- 提示框 -->
-    @if (count($errors) > 0)
-      <div class="Huialert Huialert-error">
-          @foreach ($errors->all() as $error)
-              <i class="Hui-iconfont">&#xe6a6;</i>用户名不能为空
-          @endforeach
-      </div>
-    @endif
 
     @if(Session::has('success'))
     <div class="Huialert Huialert-success"><i class="Hui-iconfont">&#xe6a6;</i>{{Session::get('success')}}</div>
@@ -48,7 +40,7 @@
     
     <div class="cl pd-5 bg-1 bk-gray mt-20">
       <span class="l">
-        <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+        <a href="javascript:;" class="btn btn-danger radius" id="delete"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
         <a class="btn btn-primary radius" href="product_list/create"><i class="Hui-iconfont">&#xe600;</i> 添加产品</a>
       </span>
     <span class="r">共有数据：<strong>{{count($total)}}</strong> 条</span>
@@ -74,7 +66,7 @@
         <tbody>
         @foreach($data as $v)
           <tr class="text-c va-m">
-            <td><input name="" type="checkbox" value=""></td>
+            <td><input name="check" type="checkbox" value="{{$v->product_id}}"></td>
             <td>{{$v->product_id}}</td>
             <td><img width="60" class="product-thumb" src="{{$v->product_img}}"></td>
             <td class="text-l">{{$v->product_name}}</td>
@@ -90,11 +82,17 @@
             <td class="text-c">{{$v->brand_name}}</td>
             <td class="text-c">{{$status[$v->status]}}</td>
             <td class="td-status">
-            @if($v->display==0)
-              <span class="label label-success radius">已发布</span>
-            @else
-              <span class="label label-default radius">已下架</span>
-            @endif
+               <form action="product_display" method="post">
+                {{csrf_field()}}
+                  <input type="hidden" name="id" value="{{$v->product_id}}"> 
+                @if($v->display == 0)
+                  <input type="hidden" name="display" value="1">
+                  <button type="submit" class="btn btn-success radius btn-status">已发布</button>
+                @else
+                  <input type="hidden" name="display" value="0">
+                  <button type="submit" class="btn btn-danger radius btn-status">已下架</button>
+                @endif
+               </form>
             </td>
             <td class="text-c">{{$v->stock}}</td>
             <td class="td-manage">
@@ -131,6 +129,26 @@
 <script type="text/javascript" src="/admin/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
 
+  a = new Array();
+
+  $('#delete').click(function(){
+
+    $('.table').find('.va-m').each(function(){
+        //这里判断id是因为不判断的话,输入找到的内容是checked的,但是循环还在继续其他的内容会是undefined
+        id = $(this).find('input:checkbox:checked').val();
+        if(id){
+          a.push(id);
+        }
+      });
+    
+    $.get('delall',{a:a},function(data){
+      if(data == 1){
+        $.Huimodalalert('商品已删除',1500);
+        location.reload();
+      }
+    });
+
+  });
 
 </script>
 </body>

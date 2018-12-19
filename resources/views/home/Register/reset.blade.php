@@ -1,0 +1,1 @@
+<a href="http://www.xiangmu.com/reset?user_id={{$id}}&token={{$token}}">重置密码</a>

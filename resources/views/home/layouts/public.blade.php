@@ -33,8 +33,13 @@
 				<div class="pull-left">嗨，欢迎来到<span class="cr">时尚网</span></div>
 			</div>
 			<div class="pull-right">
-				<a href="/login"><span class="cr">登录</span></a>
-				<a href="/login?p=register">注册</a>
+			@if(session('username'))
+				<a href=""><span class="cr">{{session('username')}}</span></a><a href="/login"><span class="cr">退出</span></a>
+			@else
+				<a href="/login/create"><span class="cr">登录</span></a>
+				<a href="/login/create?p=register">注册</a>
+			@endif	
+
 				<a href="/user/welcome">我的U袋</a>
 				<a href="udai_order.html">我的订单</a>
 			</div>
@@ -96,7 +101,7 @@
 				 @endif
 				<!-- 判断结束 -->
 
-				   <a href='/list/{{$row->cate_id}}'>{{$row->cate_name}}</a>
+				   <a href='/list?cate_id={{$row->cate_id}}'>{{$row->cate_name}}</a>
 				   	@if(count($row->sub))
 				      <ul>
 				      	@foreach($row->sub as $rows)
@@ -109,11 +114,11 @@
 				        @endif
 						<!-- 判断结束 -->
 
-				         <a href='/list/{{$rows->cate_id}}'>{{$rows->cate_name}}</a>
+				         <a href='/list?cate_id={{$rows->cate_id}}'>{{$rows->cate_name}}</a>
 				         	@if(count($rows->sub))
 				            <ul>
 				            	@foreach($rows->sub as $rowss)
-				               <li><a href='/list/{{$rowss->cate_id}}'>{{$rowss->cate_name}}</a></li>
+				               <li><a href='/list?cate_id={{$rowss->cate_id}}'>{{$rowss->cate_name}}</a></li>
 				               	@endforeach
 				            </ul>
 				            @endif
@@ -176,8 +181,8 @@
 		<div class="copy-box clearfix">
 			<ul class="copy-links">
 				<a href="agent_level.html"><li>网店代销</li></a>
-				<a href="class_room.html"><li>U袋学堂</li></a>
-				<a href="udai_about.html"><li>联系我们</li></a>
+				<a href="/links"><li>友情链接</li></a>
+				<a href="/contact"><li>联系我们</li></a>
 				<a href="temp_article/udai_article10.html"><li>企业简介</li></a>
 				<a href="temp_article/udai_article5.html"><li>新手上路</li></a>
 			</ul>
@@ -190,19 +195,6 @@
 	</div>
 </body>
 
-<script type="text/javascript">
-chi = $('.one');
 
-for(i=0;i<chi.length;i++){
-
-	if(chi[i].children){
-		chi[i].addClass('active has-sub');
-	}
-	console.log(i);	
-}	
-chi[1].find('ul').addClass("has-sub");
-// console.log(chi[0].children);
-
-</script>
 
 </html>
