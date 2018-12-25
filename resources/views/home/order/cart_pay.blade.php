@@ -30,73 +30,113 @@
 									<th width="300">商品信息</th>
 									<th width="150">单价</th>
 									<th width="200">数量</th>
-									<th width="200">运费</th>
 									<th width="80">总价</th>
 								</tr>
 							</thead>
 							<tbody>
+								@foreach($detail as $detail_v)
 								<tr>
-									<th scope="row"><a href="item_show.html"><div class="img"><img src="/home/images/temp/M-003.jpg" alt="" class="cover"></div></a></th>
+									<th scope="row">
+										<a href="item_show.html">
+											<div class="img">
+												<img src="{{$detail_v->product_img}}" alt="" class="cover" style="height: 200px;width: 100px">
+											</div>
+										</a>
+									</th>
 									<td>
-										<div class="name ep3">锦瑟 原创传统日常汉服男绣花交领衣裳cp情侣装春夏款</div>
-										<div class="type c9">颜色分类：深棕色  尺码：均码</div>
+										<div class="name ep3">{{$detail_v->product_name}}</div>
+										<div class="type c9">{{$detail_v->product_attr}}</div>
 									</td>
-									<td>¥20.0</td>
-									<td>1</td>
-									<td>¥0.0</td>
-									<td>¥20.0</td>
+									<td>¥{{$detail_v->product_price}}</td>
+									<td>{{$detail_v->product_num}}</td>
+									<td>¥{{$detail_v->product_num*$detail_v->product_price}}</td>
 								</tr>
+
+								@endforeach
 							</tbody>
 						</table>
 					</div>
 					<div class="shop-cart__info clearfix">
+						@foreach($order as $order_v)
 						<div class="pull-left text-left">
-							<div class="info-line text-nowrap">购买时间：<span class="c6">2017年09月14日 17:31:05</span></div>
+							<div class="info-line text-nowrap">订单创建时间：<span class="c6">{{Date('Y-m-d H:i:s',$order_v->created_at)}}</span></div>
 							<div class="info-line text-nowrap">交易类型：<span class="c6">担保交易</span></div>
-							<div class="info-line text-nowrap">交易号：<span class="c6">1001001830267490496</span></div>
+							<div class="info-line text-nowrap">交易号：<span class="c6">{{$order_v->order_num}}</span></div>
 						</div>
+						<input type="hidden" id="total"  name="total" value="{{$order_v->total}}">
+						<input type="hidden"  name="order_id" value="{{$order_v->order_id}}">
+						@endforeach
 						<div class="pull-right text-right">
 							<div class="form-group">
 								<label for="coupon" class="control-label">优惠券使用：</label>
-								<select id="coupon" >
-									<option value="-1" selected>- 请选择可使用的优惠券 -</option>
-									<option value="1">【满￥20.0元减￥2.0】</option>
+								<select id="coupon" name="coupon_id">
+									<option value="-1" selected >- 不使用的优惠券 -</option>
+									@foreach($coupon as $coupon_v)
+									<option value="{{$coupon_v->coupon_id}}" class="coupon">【满￥{{$coupon_v->coupon_down}}元减￥{{$coupon_v->coupon_price}}】</option>
+									@endforeach
 								</select>
 							</div>
-							<script>
-								$('#coupon').bind('change',function() {
-									console.log($(this).val());
-								})
-							</script>
-							<div class="info-line">优惠活动：<span class="c6">无</span></div>
-							<div class="info-line">运费：<span class="c6">¥0.00</span></div>
-							<div class="info-line"><span class="favour-value">已优惠 ¥2.0</span>合计：<b class="fz18 cr">¥18.0</b></div>
-							<div class="info-line fz12 c9">（可获 <span class="c6">20</span> 积分）</div>
-						</div>
-					</div>
-					<div class="shop-title">请核对订单后再支付</div>
-					<div class="pay-mode__box">
-
-						<div class="radio-line radio-box">
-							<label class="radio-label ep">
-								<input name="pay-mode" value="2" autocomplete="off" type="radio"><i class="iconfont icon-radio"></i>
-								<img src="/home/images/icons/alipay.png" alt="支付宝支付">
-							</label>
-							<div class="pay-value">支付<b class="fz16 cr">18.00</b>元</div>
+							<div class="info-line">优惠活动：<span class="c6" id="coupon-action">【无】</span></div>
+							<div class="info-line">总价：<span class="c6 " id="all-total">¥0.00</span></div>
+							<div class="info-line">已优惠 <span class="favour-value" id="coupon-price">¥0.0</span>合计：<b class="fz18 cr" id="he-total">0.00</b></div>
 						</div>
 					</div>
 					<div class="user-form-group shopcart-submit">
-						<button type="submit" class="btn">去支付</button>
+						<button type="submit" class="btn btn-submit" >去支付</button>
 					</div>
-					<script>
+				</form>
+			</div>
+
+					<!-- 选择优惠券时候改变 -->
+					<script type="text/javascript">
+
+						//总价
+						var total = $('#total').val();
+						//下
+						var down = $('#coupon_down').val();
+						//优惠券价格
+						var price = $('#coupon_price').val();
+						$('#all-total').html('￥'+total);
+						$('#he-total').html('￥'+total);
+
 						$(document).ready(function(){
 							$(this).on('change','input',function() {
 								$(this).parents('.radio-box').addClass('active').siblings().removeClass('active');
+								$('.btn-submit').attr("disabled",false);
+
 							})
 						});
+						$('#coupon').change(function(){
+							//优惠券
+							var coupon = $(this).val();
+							// alert(coupon);
+							$.get('/user/order_coupon',{coupon:coupon},function(data){
+								if (data != 0) {
+									res = JSON.parse(data);
+									//优惠间下
+									var coupon_down = res[0]['coupon_down'];
+									//优惠券价格
+									var coupon_price = res[0]['coupon_price'];
+									if (coupon_down > total) {
+										alert('不满足优惠券使用规则');
+										$('#he-total').html('￥'+(parseInt(total)));
+										$('#coupon-price').html('￥'+'0');
+										$('#coupon-action').html('【无】');
+										$('#pay_mode').val(222);
+
+									}else{
+										$('#he-total').html('￥'+(parseInt(total)-parseInt(coupon_price)));
+										$('#coupon-price').html('￥'+parseInt(coupon_price));
+										$('#coupon-action').html('【满￥'+coupon_down+'元减￥'+coupon_price+'】' );
+										$('#pay_mode').val(222);
+
+									}								
+									
+								}
+							})
+
+						})
 					</script>
-				</form>
-			</div>
 		</section>
 	</div>
 	@endsection

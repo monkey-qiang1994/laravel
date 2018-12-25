@@ -28,7 +28,7 @@ class ProductInsert extends FormRequest
             'product_name'=>'required',
             'price'=>'required|numeric',
             'stock'=>'required|numeric',
-            'pics'=>'required',
+            'pics'=>'required'
         ];
     }
 

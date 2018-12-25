@@ -16,7 +16,23 @@ class CartController extends Controller
     public function index()
     {
         //加载模版
-        return view('home.cart_page');
+        $res = DB::table('cart')
+        ->join('products','products.product_id','=','cart.product_id')
+        ->join('products_images','products_images.product_id','=','products.product_id')
+        ->groupBy('cart.product_att')
+        ->select('cart.*','products.product_name','products.price','products_images.product_img')
+        ->get();
+        
+        foreach ($res as $key => $value) {
+           $info = $value->product_id;
+        }
+        if (!isset($info)) {
+            $info = 'x';
+        }
+        //获取购物车中的数量
+        $cart_num = $this->cart_num();
+        // var_dump($info);
+        return view('home.order.cart_page',['res'=>$res,'info'=>$info,'cart_num'=>$cart_num]);
     }
 
     /**
@@ -26,7 +42,7 @@ class CartController extends Controller
      */
     public function create()
     {
-        //
+        // 
     }
 
     /**

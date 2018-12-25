@@ -40,7 +40,7 @@ class RegisterController extends Controller
         //在闭包函数内部使用闭包函数外部的变量 必须use 导入 a 是模板
         Mail::send('Home.Register.a',['id'=>10],function($message){
             //发送主题
-            $message->subject('激活');
+            $message->subject('菲诺商城-激活账户');
             //接收方
             $message->to('992168086@qq.com');
         });
@@ -116,7 +116,7 @@ class RegisterController extends Controller
         //在闭包函数内部使用闭包函数外部的变量 必须use 导入 a 是模板
         Mail::send('Home.Register.jihuo',['id'=>$id,'token'=>$token],function($message)use($email){
             //发送主题
-            $message->subject('激活');
+            $message->subject('菲诺商城-激活账户');
             //接收方
             $message->to($email);
         });
@@ -204,7 +204,7 @@ class RegisterController extends Controller
                     $res=$this->sendMails($data['email'],$id,$data['token']);//$email 接收方 $id注册用户的id $token检测参数
                     if($res){
                         // echo '激活邮件已发送,请登录邮箱激活';
-                        echo '<script>alert("注册成功,请登录邮箱激活");location="/"</script>';
+                        echo '<script>alert("注册成功,请登录邮箱激活");location="http://www.laravel.com/login/create"</script>';
                     }
                 }
             }else{

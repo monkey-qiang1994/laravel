@@ -53,16 +53,15 @@ class AdsController extends Controller
             //获取除 _token,pic以外的参数
             $input = $request->except(['_token','pic']);
             //文件名
-            $input['ads_path'] = $name.".".$ext ;
+            $input['ads_path'] = $name.".".$ext;
+
+        }
+
             if (DB::table('advertising')->insert($input)) {
                 return redirect('/adminx/ads')->with('success','添加成功');
             }else{
                 return redirect('/adminx/ads')->with('error','添加失败');               
             }
-            
-        }else{
-           return redirect('/adminx/ads/create')->with('error','文件上传失败');
-        }
     }
 
     /**
@@ -148,7 +147,7 @@ class AdsController extends Controller
         // dd($request->all());
         if (DB::table('advertising')->where('ads_id','=',$id)->delete()) {
             //删除文件中的图片
-            unlink('./uploads/slider'.$pic);
+            unlink('./uploads/slider/'.$pic);
             return redirect('adminx/ads')->with('success','删除成功');
         }else{
             return redirect('amdinx/ads')->with('error','删除失败');

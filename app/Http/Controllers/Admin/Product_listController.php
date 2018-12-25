@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 //引入表单请求效验类
 use App\Http\Requests\ProductInsert;
 use DB;
+//引入图片处理方法
+use Intervention\Image\ImageManagerStatic as Image;
 class Product_listController extends Controller
 {
     /**
@@ -16,20 +18,39 @@ class Product_listController extends Controller
      */
     public function index(Request $request)
     {
-        //获取所有产品数量,专门用于统计数量
-        $total = DB::table('products')->get();
-        //分页
-        $data = DB::table('products')
-        ->join('category','products.cate_id','=','category.cate_id')
-        ->join('brand','products.brand_id','=','brand.brand_id')
-        ->join('products_images','products.product_id','=','products_images.product_id')
-        ->select('products.*','category.cate_name','brand.brand_name','products_images.product_img')
-        ->groupBy('products.product_id')
-        ->paginate(5);
-    
+        $keyword = $request->input('keyword');
+        if($keyword){
+
+            //获取所有产品数量,专门用于统计数量
+            $total = DB::table('products')->where('product_name','like','%'.$keyword.'%')->get();
+            //分页
+            $data = DB::table('products')
+            ->join('category','products.cate_id','=','category.cate_id')
+            ->join('brand','products.brand_id','=','brand.brand_id')
+            ->join('products_images','products.product_id','=','products_images.product_id')
+            ->select('products.*','category.cate_name','brand.brand_name','products_images.product_img')
+            ->groupBy('products.product_id')
+            ->where('product_name','like','%'.$keyword.'%')
+            ->paginate(5);
+
+        }else{
+
+            //获取所有产品数量,专门用于统计数量
+            $total = DB::table('products')->get();
+            //分页
+            $data = DB::table('products')
+            ->join('category','products.cate_id','=','category.cate_id')
+            ->join('brand','products.brand_id','=','brand.brand_id')
+            ->join('products_images','products.product_id','=','products_images.product_id')
+            ->select('products.*','category.cate_name','brand.brand_name','products_images.product_img')
+            ->groupBy('products.product_id')
+            ->paginate(5);
+
+        }
+        
         $status = array('无状态','爆款推荐','新品直达','畅销产品');
         //产品管理
-        return view('admin.product_list',['data'=>$data,'status'=>$status,'request'=>$request->all(),'total'=>$total]);
+        return view('admin.product_list',['data'=>$data,'status'=>$status,'request'=>$request->all(),'total'=>$total,'evaluation'=>$evaluation]);
 
     }
 
@@ -89,6 +110,7 @@ class Product_listController extends Controller
             $file->move(base_path().'/public/uploads/products', $name.'.'.$ext);
             //将图片路径存入到数组中
             $imgs[] = '/uploads/products/'.$name.'.'.$ext;
+            Image::make('./uploads/products/'.$name.'.'.$ext)->resize(800,null)->save('./uploads/products/'.$name.'.'.$ext);
         }
 
         //循环把图片数据插入到数据库中
@@ -184,6 +206,7 @@ class Product_listController extends Controller
                 $file->move(base_path().'/public/uploads/products', $name.'.'.$ext);
                 //将图片路径存入到数组中
                 $imgs[] = '/uploads/products/'.$name.'.'.$ext;
+                Image::make('./uploads/products/'.$name.'.'.$ext)->resize(800,null)->save('./uploads/products/'.$name.'.'.$ext);
             }
 
             //循环把图片数据插入到数据库中

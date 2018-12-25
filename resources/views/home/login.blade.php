@@ -24,6 +24,7 @@
 	<!-- 登录页面 -->
 	<div style="background:url(/home/images/login_bg.jpg) no-repeat center center; ">
 		<div class="login-layout container">
+			<!-- 登陆页面 -->
 			<div class="form-box login">
 				<div class="tabs-nav">
 					<h2>欢迎登录U袋网平台</h2>
@@ -92,7 +93,7 @@
                 </div>
 			</div>
 			<!-- 注册页面 -->
-			<div class="form-box register" style="display:none;">
+			<div class="form-box register">
   				<div class="tabs-nav">
   					<h2>欢迎注册<a href="javascript:;" class="pull-right fz16" id="reglogin">返回登录</a></h2>
   				</div>
@@ -170,7 +171,7 @@
                 </div>
 			</div>
 			<!-- 重置密码页面 -->
-			<div class="form-box resetpwd" style="display:none;">
+			<div class="form-box resetpwd">
   				<div class="tabs-nav clearfix">
   					<h2>找回密码<a href="javascript:;" class="pull-right fz16" id="pwdlogin">返回登录</a></h2>
   				</div>
@@ -210,6 +211,18 @@
                 </div>
 			</div>
 			<script>
+
+			if($('.login').css('display','block')){
+				$('.register').css('display','none');
+				$('.resetpwd').css('display','none');
+			}else if($('.register').css()){
+				$('.login').css('display','none');
+				$('.resetpwd').css('display','none');
+			}else if($('.resetpwd').css('display','block')){
+				$('.login').css('display','none');
+				$('.register').css('display','none');
+			}
+
 			//获取手机号 绑定失去焦点事件
 			$('.zhuce').blur(function(){
 				//获取手机号
@@ -236,7 +249,7 @@
 				$(document).ready(function() {
 					// 判断直接进入哪个页面 例如 login.php?p=register
 					switch($.getUrlParam('p')) {
-						case 'register': $('.register').show(); break;
+						case 'register': $('.register').show();$('.login').hide(); break;
 						case 'resetpwd': $('.resetpwd').show(); break;
 						default: $('.login').show();
 					};

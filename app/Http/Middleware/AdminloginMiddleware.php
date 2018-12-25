@@ -16,7 +16,7 @@ class AdminloginMiddleware
     public function handle($request, Closure $next)
     {   
         //检测用户是否具有登录的session
-        if($request->session()->has('username')){
+        if($request->session()->has('usernamex')){
             //获取访问模块控制器和方法名
             $actions=explode('\\', \Route::current()->getActionName()); 
             //或$actions=explode('\\', \Route::currentRouteAction()); 

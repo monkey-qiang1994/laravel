@@ -7,15 +7,28 @@
 		<!-- 引入侧边菜单 -->
 			@include('home.layouts.sidebar')
 			<div class="pull-right">
+				@if(session('success'))
+						<div class="alert alert-success alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>	
+						{{session('success')}}</div>
+				@elseif(session('error'))
+						<div class="alert alert-danger alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						{{session('error')}}</div>
+				@endif
 				<div class="user-center__info bgf">
 					<div class="pull-left clearfix">
 						<div class="port b-r50 pull-left">
-							<img src="/home/images/icons/default_avt.png" alt="用户名" class="cover b-r50">
+						@if($da==1)
+							<img src="{{$data[0]}}" alt="" class="cover b-r50">
+						@else	
+							<img src="" class="cover b-r50" alt="">
+						@endif
 							<a href="udai_setting.html" class="edit"><i class="iconfont icon-edit"></i></a>
 						</div>
-						<p class="name text-nowrap">您好，18759808122！</p>
-						<p class="money text-nowrap">余额：¥88.0</p>
-						<p class="level text-nowrap">身份：普通会员 <a href="agent_level.html">提升</a></p>
+						<p class="name text-nowrap">您好，{{$info[0]}}</p>
+						<p class="money text-nowrap"><a href="/user/info/{{session('user_id')}}/edit">修改个人信息</a></p>
+						<p class="level text-nowrap"><a href="/user/modifypwd">修改登录信息</a></p>
 					</div>
 					<div class="pull-right user-nav">
 						<a href="udai_order.html" class="user-nav__but">

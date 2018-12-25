@@ -18,7 +18,7 @@ class AdminloginController extends Controller
     {
         //退出
         //销毁session
-        $request->session()->pull('username');
+        $request->session()->pull('usernamex');
         //跳转
         return redirect('/adminlogin/create');
     }
@@ -52,7 +52,7 @@ class AdminloginController extends Controller
             if(Hash::check($request->input('password'),$user->password)){
                 // echo "登录成功";
                 // 把登录信息写入到session
-                session(['username'=>$user->username]);
+                session(['usernamex'=>$user->username]);
                 // 1.获取用户的所有权限列表
                 $list=DB::select("select n.name,n.mname,n.aname from user_role as
                 ur,role_node as rn,node as n where ur.rid=rn.rid and rn.nid=n.id and uid={$user->admin_id}");

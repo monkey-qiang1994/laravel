@@ -205,7 +205,7 @@
     this._translateX = viewportX - imageCenterX
 
     var targetTransform = 'scale(' + this._imgScaleFactor + ')'
-    var imageWrapTransform = 'translate(' + this._translateX + 'px, ' + this._translateY + 'px)'
+    var imageWrapTransform = 'translate(' + this._translateX + 'px, ' + 100 + 'px)'
 
     if ($.support.transition) {
       imageWrapTransform += ' translateZ(0)'

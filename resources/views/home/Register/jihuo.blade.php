@@ -1,1 +1,1 @@
-<a href="http://www.laravel.com/jihuo?user_id={{$id}}&token={{$token}}">激活</a>
+感谢您注册菲诺商城,请点击激活按纽来激活您的账户:<a href="http://www.laravel.com/jihuo?user_id={{$id}}&token={{$token}}">点我激活</a>!

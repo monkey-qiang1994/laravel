@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use DB;
 
 class LinksController extends Controller
 {
@@ -14,8 +15,9 @@ class LinksController extends Controller
      */
     public function index()
     {
+        $links = DB::table('friend_link')->get();
         //友情链接
-        return view('admin.links');
+        return view('admin.links',['links'=>$links]);
     }
 
     /**
@@ -71,6 +73,14 @@ class LinksController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $status = $request->except('_token','_method');
+
+        if(DB::table('friend_link')->where('link_id','=',$id)->update(['status'=>$status['display']])){
+            return back()->with("success",'状态更新成功');
+        }else{
+            return back()->with("error",'状态更新失败');
+        }
+
     }
 
     /**
@@ -81,6 +91,10 @@ class LinksController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if(DB::table('friend_link')->where('link_id','=',$id)->delete()){
+            return back()->with("success",'删除成功');
+        }else{
+            return back()->with("error",'删除失败');
+        }
     }
 }

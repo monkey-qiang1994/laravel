@@ -37,7 +37,7 @@
         <span class="select-box">
         <select name="ads_position" class="select">
           <option disabled="disabled" >请选择添加位置</option>
-          <option value="1" <?php echo $res->ads_position==1?'selected':''; ?>>位置1</option>
+          <option value="1" <?php echo $res->ads_position==1?'selected':''; ?>>轮播图</option>
           <option value="2" <?php echo $res->ads_position==2?'selected':''; ?>>位置2</option>
           <option value="3" <?php echo $res->ads_position==3?'selected':''; ?>>位置3</option>
           <option value="4" <?php echo $res->ads_position==4?'selected':''; ?>>位置4</option>
@@ -64,7 +64,7 @@
       <label class="form-label col-xs-4 col-sm-2">图片预览：</label>
       <div class="formControls col-xs-8 col-sm-9">
         <div class="uploader-list-container"> 
-            <img src="/Uploads/{{$res->ads_path}}" style="width: 100%;">
+            <img src="/uploads/slider/{{$res->ads_path}}" width="200">
         </div>
       </div>
     </div>

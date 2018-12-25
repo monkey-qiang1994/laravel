@@ -18,7 +18,7 @@ class Member_listController extends Controller
         //获取搜索关键词
         $k=$request->input('keywords');
         //会员列表
-        $user=DB::table('homeuser')->where('username','like','%'.$k.'%')->paginate(2);
+        $user=DB::table('homeuser')->where('username','like','%'.$k.'%')->paginate(5);
         return view('admin.member_list',['user'=>$user]);
     }
 

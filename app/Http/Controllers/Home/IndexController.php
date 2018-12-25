@@ -54,10 +54,37 @@ class IndexController extends Controller
         ->take(8)
         ->get();
 
-        
+        //获取新闻数据
+        $article = DB::table('article')->get();
+
+        //获取幻灯片数据
+        $slider = DB::table('advertising')->where('ads_position','=',1)->get();
+
+        //获取广告图
+        $ads = DB::table('advertising')->where('ads_position','!=',1)->get();
+
+        //获取购物车中的数量
+        $cart_num = $this->cart_num();
+
+        //优惠卷开始
+        $time = time();
+        //优惠券生成模块
+        $coupon_list = DB::table('coupon_make')->get();
+        //查看数据库中优惠券是否过期
+        foreach ($coupon_list as  $v) {
+            if ($time > $v->coupon_time) {
+                DB::table('coupon_make')->where('coupon_id','=',$v->coupon_id)->update(['coupon_status'=>1]);
+                //改变发送的过期的优惠券状态
+                DB::table('coupon_send')
+                ->join('coupon_make','coupon_make.coupon_id','=','coupon_send.coupon_id')
+                ->where('coupon_send.coupon_id','=',$v->coupon_id)
+                ->update(['coupon_send.coupon_status'=>1]);
+            }
+        }
+        //优惠卷结束
 
         //加载首页
-        return view("home.index",['recommend'=>$recommend,'news'=>$news,'popular'=>$popular,'discount'=>$discount]);
+        return view("home.index",['recommend'=>$recommend,'news'=>$news,'popular'=>$popular,'discount'=>$discount,'cart_num'=>$cart_num,'slider'=>$slider,'ads'=>$ads,'article'=>$article]);
     }
 
     /**

@@ -42,6 +42,7 @@
         <th width="100">优惠券说明</th>
         <th width="40">最低使用金额</th>
         <th width="90">优惠券金额</th>
+        <th width="90">优惠券状态</th>
         <th width="130">过期时间</th>
         <th width="100">操作</th>
       </tr>
@@ -54,7 +55,14 @@
         <td>{{$v->coupon_num}}</td>
         <td>{{$v->coupon_caption}}</td>
         <td>{{$v->coupon_down}}</td>
-        <td class="td-status"><span class="label label-success radius">{{$v->coupon_price}}</span></td>
+        <td class="td-status"><span class="label label-danger radius">{{$v->coupon_price}}</span></td>
+        <td class="td-status">
+          @if($v->coupon_status == 0)
+          <span class="label label-success radius">可用</span>
+          @else
+          <span class="label label-warning radius">过期</span>
+          @endif
+        </td>
         <td>{{Date('Y-m-d H:i:s',$v->coupon_time)}}</td>
         <td class="td-manage">
           <a style="text-decoration:none;font-size: 25px" class="ml-5" onclick="picture_add('发送','/adminx/coupon_send?id={{$v->coupon_id}}','10001')" href="javascript:;" title="发送" ><i class="Hui-iconfont">&#xe68a;</i></a>

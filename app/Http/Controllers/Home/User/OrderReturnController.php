@@ -14,8 +14,10 @@ class OrderReturnController extends Controller
      */
     public function index()
     {
-        //
-        return view('home.user.order_return_list');
+        //获取购物车中的数量
+        $cart_num = $this->cart_num();
+
+        return view('home.user.order_return_list',['cart_num'=>$cart_num]);
     }
 
     /**

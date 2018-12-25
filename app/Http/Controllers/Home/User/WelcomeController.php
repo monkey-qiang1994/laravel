@@ -4,7 +4,7 @@ namespace App\Http\Controllers\home\user;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use DB;
 class WelcomeController extends Controller
 {
     /**
@@ -15,7 +15,15 @@ class WelcomeController extends Controller
     public function index()
     {
         //加载模版
-        return view('home.user.user_welcome');
+        //判断是否填写了头像
+        $data=DB::table('user_details')->where('user_id','=',session('user_id'))->pluck('pic');
+        // var_dump($data);
+        $info=DB::table('homeuser')->where('user_id','=',session('user_id'))->pluck('username');
+        $da=count(DB::table('user_details')->where('user_id','=',session('user_id'))->pluck('pic'));
+
+        //获取购物车中的数量
+        $cart_num = $this->cart_num();
+        return view('home.user.user_welcome',['data'=>$data,'info'=>$info,'da'=>$da,'cart_num'=>$cart_num]);
     }
 
     /**

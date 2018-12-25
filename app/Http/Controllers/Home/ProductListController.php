@@ -15,29 +15,84 @@ class ProductListController extends Controller
      */
     public function index(Request $request)
     {
-
-        $category = DB::table('category')->get();
-        $color = DB::table('attributes')->where('cate_att_id','=',1)->get();
-        $size = DB::table('attributes')->where('cate_att_id','=',2)->get();
-
+        //获取地址栏的分类id信息
         $cate_id = $request->input('cate_id');
+        //获取搜索关键词
+        $keyword = $request->input('keyword');
 
-        $category_pid = DB::table('category')->where('pid','=',$cate_id)->get();
+        //如果有从地址栏获取到分类信息的话,去下面匹配该分类下面的所有子类
+        if($cate_id){
 
-        $result = DB::table('products')
-        ->join('products_images','products.product_id','=','products_images.product_id')
-        ->join('brand','brand.brand_id','=','products.brand_id')
-        ->groupBy('products.product_id')
-        ->select('products.*','brand.brand_name','products_images.product_img')
-        ->paginate(16); 
+            $pid = DB::table('category')->where('pid','=',$cate_id)->get();
+            
+            if(!$pid->isEmpty()){
+                //获取到的所属子类后,把子类的id专门遍历到数组中
+                foreach($pid as $sub){
+                    $arr[] = $sub->cate_id;
+                }
+
+                $result = DB::table('products')
+                ->join('category','products.cate_id','=','category.cate_id')
+                ->join('brand','products.brand_id','=','brand.brand_id')
+                ->join('products_images','products.product_id','=','products_images.product_id')
+                ->select('products.*','category.cate_name','brand.brand_name','products_images.product_img')
+                ->groupBy('products.product_id')
+                ->whereIn('products.cate_id',$arr)
+                ->paginate(16);
+
+            }else{
+                //否则就是该分类没有子类,那么直接显示所有属于这个分类的产品
+                $result = DB::table('products')
+                ->join('category','products.cate_id','=','category.cate_id')
+                ->join('brand','products.brand_id','=','brand.brand_id')
+                ->join('products_images','products.product_id','=','products_images.product_id')
+                ->select('products.*','category.cate_name','brand.brand_name','products_images.product_img')
+                ->groupBy('products.product_id')
+                ->where('products.cate_id','=',$cate_id)
+                ->paginate(16); 
+
+            }
+
+        }elseif($keyword){
+
+            $result = DB::table('products')
+                ->join('category','products.cate_id','=','category.cate_id')
+                ->join('brand','products.brand_id','=','brand.brand_id')
+                ->join('products_images','products.product_id','=','products_images.product_id')
+                ->select('products.*','category.cate_name','brand.brand_name','products_images.product_img')
+                ->groupBy('products.product_id')
+                ->where('products.product_name','like','%'.$keyword.'%')
+                ->paginate(16);
+            
+        }else{
+            $result = DB::table('products')
+                ->join('category','products.cate_id','=','category.cate_id')
+                ->join('brand','products.brand_id','=','brand.brand_id')
+                ->join('products_images','products.product_id','=','products_images.product_id')
+                ->select('products.*','category.cate_name','brand.brand_name','products_images.product_img')
+                ->groupBy('products.product_id')
+                ->paginate(16);
+        }
         
+        //获取爆款推荐数据
+        $recommend = DB::table('products')
+        ->join('products_images','products.product_id','=','products_images.product_id')
+        ->join('brand','products.brand_id','=','brand.brand_id')
+        ->select('products.*','products_images.product_img','brand.brand_name')
+        ->groupBy('products.product_id')
+        ->where([['products.status','=',1],['products.display','=',0]])
+        ->take(8)
+        ->get();
 
-        //获取所有产品数量
-        $total = DB::table('products')->get();
+        //获取商品评价
+        $evaluation = DB::table('evaluation_product')->get();
+
+        //获取购物车中的数量
+        $cart_num = $this->cart_num();
 
 
         //加载商品列表页面
-        return view("home.product_list",['category'=>$category,'color'=>$color,'size'=>$size,'result'=>$result,'request'=>$request->all(),'total'=>$total]);
+        return view("home.product_list",['result'=>$result,'request'=>$request->all(),'cart_num'=>$cart_num,'recommend'=>$recommend,'evaluation'=>$evaluation]);
     }
 
     /**

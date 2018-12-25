@@ -25,14 +25,14 @@
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 评论管理 <span class="c-gray en">&gt;</span> 意见反馈 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-  <div class="text-c"> 日期范围：
-    <input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" class="input-text Wdate" style="width:120px;">
-    -
-    <input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" class="input-text Wdate" style="width:120px;">
-    <input type="text" class="input-text" style="width:250px" placeholder="输入关键词" id="" name="">
-    <button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜意见</button>
+  <div class="text-c"> 
+    <form method="get" action="/adminx/order_list">
+      {{csrf_field()}}
+      订单号搜索：<input type="text" class="input-text" style="width:250px" placeholder="输入关键词" id="" name="search">
+      <button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+    </form>
   </div>
-  <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> </span> <span class="r">共有数据：<strong>88</strong> 条</span> </div>
+  <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> </span> <span class="r">共有数据：<strong>{{$total}}</strong> 条</span> </div>
   <div class="mt-20">
     <table class="table table-border table-bordered table-hover table-bg table-sort">
       <thead>
@@ -40,11 +40,13 @@
           <th width="25"><input type="checkbox" name="" value=""></th>
           <th width="60">ID</th>
           <th width="60">用户名</th>
+          <th >地址</th>
           <th>订单编号</th>
-          <th>地址</th>
-          <th>联系电话</th>
+          <th>商品数量</th>
+          <th>总金额</th>
+          <th>应付款</th>
           <th>订单创建时间</th>
-          <th>订单最后修改时间</th>
+          <th>订单支付时间</th>
           <th>订单状态</th>
           <th width="100">操作</th>
         </tr>
@@ -55,11 +57,13 @@
           <td><input type="checkbox" value="1" name=""></td>
           <td>{{$v->order_id}}</td>
           <td><a href="javascript:;" onclick="member_show('张三','/adminx/order_user?id={{$v->user_id}}','10001','360','400')"><i class="avatar size-L radius"><img alt="" src="/admin/static/h-ui/images/ucnter/avatar-default-S.gif"></i></a></td>
+          <td>{{$v->order_id}}</td>
           <td>{{$v->order_num}}</td>
-          <td>{{$v->address}}</td>
-          <td>{{$v->phone}}</td>
+          <td>{{$v->num}}</td>
+          <td>{{$v->total}}</td>
+          <td>{{$v->payable}}</td>
           <td>{{$v->created_at}}</td>
-          <td>{{$v->updated_at}}</td>
+          <td>{{Date('Y-m-d H:i:s',$v->pay_at)}}</td>
           @if($v->order_status == 0)
           <td class="td-status"><span class="label label-warning radius">待支付</span></td>
           @endif
@@ -69,7 +73,7 @@
           @if($v->order_status == 2)
           <td class="td-status"><span class="label label-success radius">待评价</span></td>
           @endif
-          @if($v->order_status == 3)
+          @if($v->order_status >= 3)
           <td class="td-status"><span class="label label-primary radius">已完成</span></td>
           @endif           
 
@@ -78,17 +82,15 @@
             @if($v->order_status == 1)
             <a style="text-decoration:none;font-size: 25px;"  class="ml-5" onclick="member_send('发货','codeing.html','1')" href="javascript:;" title="发货"><i class="Hui-iconfont">&#xe669;</i></a> 
             @endif
-            <form action="/adminx/order_list/{{1}}" method="post">
-              {{csrf_field()}}
-              {{method_field('DELETE')}}
-              <button style="text-decoration:none;font-size: 25px" class="  btn btn-link"  href="javascript:;" type="submit"><i class="Hui-iconfont">&#xe6e2;</i></button></td>
-            </form>
           </td>
 
         </tr>
         @endforeach
       </tbody>
     </table>
+    <div style="float: right">
+      {{$res->appends($request)->render()}}
+    </div>
   </div>
 </div>
 
@@ -103,17 +105,6 @@
 <script type="text/javascript" src="/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
 <script type="text/javascript" src="/admin/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
-$(function(){
-  $('.table-sort').dataTable({
-    "aaSorting": [[ 1, "desc" ]],//默认第几个排序
-    "bStateSave": true,//状态保存
-    "aoColumnDefs": [
-      //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-      {"orderable":false,"aTargets":[0,2,4]}// 制定列不参与排序
-    ]
-  });
-
-});
 /*用户-添加*/
 function member_add(title,url,w,h){
   layer_show(title,url,w,h);

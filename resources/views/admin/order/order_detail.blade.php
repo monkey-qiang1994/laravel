@@ -10,11 +10,18 @@
 <script type="text/javascript" src="/admin/lib/html5shiv.js"></script>
 <script type="text/javascript" src="/admin/lib/respond.min.js"></script>
 <![endif]-->
-<link rel="stylesheet" type="text/css" href="/admin/static/h-ui/css/H-ui.min.css" />
-<link rel="stylesheet" type="text/css" href="/admin/static/h-ui.admin/css/H-ui.admin.css" />
-<link rel="stylesheet" type="text/css" href="/admin/lib/Hui-iconfont/1.0.8/iconfont.css" />
-<link rel="stylesheet" type="text/css" href="/admin/static/h-ui.admin/skin/default/skin.css" id="skin" />
-<link rel="stylesheet" type="text/css" href="/admin/static/h-ui.admin/css/style.css" />
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/home/css/iconfont.css">
+  <link rel="stylesheet" href="/home/css/global.css">
+  <link rel="stylesheet" href="/home/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/home/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="/home/css/swiper.min.css">
+  <link rel="stylesheet" href="/home/css/styles.css">
+  <script src="/home/js/jquery.1.12.4.min.js" charset="UTF-8"></script>
+  <script src="/home/js/bootstrap.min.js" charset="UTF-8"></script>
+  <script src="/home/js/swiper.min.js" charset="UTF-8"></script>
+  <script src="/home/js/global.js" charset="UTF-8"></script>
+  <script src="/home/js/jquery.DJMask.2.1.1.js" charset="UTF-8"></script>
 <!--[if IE 6]>
 <script type="text/javascript" src="/admin/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
@@ -22,70 +29,67 @@
 <title>建材列表</title>
 <link rel="stylesheet" href="/admin/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
 </head>
-<body class="pos-r">
-      <div style="width: 100%;background: #79cbc3;margin: 15px 0px;font-size: 16px;">
-        <div class="cl pd-5 " style="height: 31px;line-height: 31px; margin-left: 15px"> 
-          <span class="l" style="font-weight: bold;"> 订单号:</a> </span> 
-          <span class="l" style="margin-left: 15px">xxxxxxx</span> 
+      <div class="pull-right">
+        @foreach($order as $order_v)
+        <div class="user-content__box clearfix bgf">
+          <div class="title">订单中心-订单{{$order_v->order_num}}</div>
+          <div class="order-info__box">
+            <div class="order-addr">收货地址：<span class="c6">{{$order_v->address_id}}</span></div>
+            <div class="order-info">
+              订单信息
+              <table>
+                <tbody><tr>
+                  <td>创建时间：{{Date('Y-m-d H:i:s',$order_v->created_at)}}</td>
+                  <td></td>
+                  <td>成交时间：{{Date('Y-m-d H:i:s',$order_v->pay_at)}}</td>
+                </tr>
+                <tr>
+                  <td>订单编号：{{$order_v->order_num}}</td>
+                  <td></td>
+                </tr>
+              </tbody></table>
+            </div>
+            @endforeach
+            <div class="table-thead">
+              <div class="tdf3">商品</div>
+              <div class="tdf1">数量</div>
+              <div class="tdf1">单价</div>
+              <div class="tdf1">合计</div>
+            </div>
+            @foreach($detail as $detail_v)
+            <div class="order-item__list">
+              <div class="item">
+                <div class="tdf3">
+                  <a href="item_show.html"><div class="img"><img src="{{$detail_v->product_img}}" alt="" class="cover"></div>
+                  <div class="ep2 c6">{{$detail_v->product_name}}</div></a>
+                  <div class="attr ep">{{$detail_v->product_attr}}</div>
+                </div>
+                <div class="tdf1">{{$detail_v->product_num}}</div>
+                <div class="tdf1">¥{{$detail_v->product_price}}</div>
+                <div class="tdf1">¥{{$detail_v->product_num*$detail_v->product_price}}</div>
+              </div>
+            </div>
+            @endforeach
+            @foreach($coupon as $coupon_v)
+            <div class="price-total">
+              <div class="fz12 c9">@if(isset($coupon_v->coupon_price))使用优惠券【满￥{{$coupon_v->coupon_down}}减￥{{$coupon_v->coupon_price}}】优惠￥{{$coupon_v->coupon_price}}元
+              @else
+              不使用优惠券
+              @endif
+            </div>
+              <div class="fz18 c6" style="font-size: 16px">总价：<b class="cr" style="color: #12242e">¥
+                {{$coupon_v->total}}
+                </b></div><br>
+              <div class="fz18 c6">实付款：<b class="cr">¥
+                @if(empty($coupon_v->payable))
+                {{$coupon_v->total}}
+                @else
+                {{$coupon_v->payable}}
+                @endif</b></div>
+            </div>
+            @endforeach
+          </div>
         </div>
-        <div class="cl pd-5 " style="height: 31px;line-height: 31px; margin-left: 15px"> 
-          <span class="l" style="font-weight: bold;"> 地址:</a> </span> 
-          <span class="l" style="margin-left: 15px">xxxxxxx</span> 
-        </div>
-        <div class="cl pd-5 " style="height: 31px;line-height: 31px; margin-left: 15px"> 
-          <span class="l" style="font-weight: bold;"> 联系电话:</a> </span> 
-          <span class="l" style="margin-left: 15px">xxxxxxx</span> 
-        </div>
-      </div>  
-      <table class="table table-border table-bordered table-bg table-hover table-sort">
-        <thead>
-          <tr class="text-c">
-            <th width="40">id</th>
-            <th width="60">订单id</th>
-            <th width="60">商品id</th>
-            <th >商品图片</th>
-            <th >商品属性</th>
-            <th >商品数量</th>
-            <th >商品单价</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="text-c va-m">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-      <div style="width: 100%;background: #fafafa;margin: 15px 0px;font-size: 16px;">
-        <div class="cl pd-5  " style="height: 31px;line-height: 31px; margin-right: 15px"> 
-          <span class="r" style="margin-left: 15px">xxxxxxx</span> 
-          <span class="r"  style="font-weight: bold;"> 总金额:</a> </span> 
-        </div>
-        <div class="cl pd-5  " style="height: 31px;line-height: 31px; margin-right: 15px"> 
-          <span class="r" style="margin-left: 15px">xxxxxxx</span> 
-          <span class="r"  style="font-weight: bold;"> 优惠卷:</a> </span> 
-        </div>
-        <div class="cl pd-5  " style="height: 31px;line-height: 31px; margin-right: 15px"> 
-          <span class="r" style="margin-left: 15px">xxxxxxx</span> 
-          <span class="r"  style="font-weight: bold;"> 应付款:</a> </span> 
-        </div>
-      </div>  
-<!--_footer 作为公共模版分离出去-->
-<script type="text/javascript" src="/admin/lib/jquery/1.9.1/jquery.min.js"></script> 
-<script type="text/javascript" src="/admin/lib/layer/2.4/layer.js"></script>
-<script type="text/javascript" src="/admin/static/h-ui/js/H-ui.min.js"></script> 
-<script type="text/javascript" src="/admin/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+      </div>
 
-<!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="/admin/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
-<script type="text/javascript" src="/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
-<script type="text/javascript" src="/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
-<script type="text/javascript" src="/admin/lib/laypage/1.2/laypage.js"></script>
-
-</body>
 </html>

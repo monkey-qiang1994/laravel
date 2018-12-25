@@ -1,11 +1,11 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\AdminMOdel\Order;
-
+use DB;
 class Order_listController extends Controller
 {
     /**
@@ -13,11 +13,18 @@ class Order_listController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //订单管理
-        $res = Order::select()->get();
-        return view('admin.order.order_list',['res'=>$res]);
+        // var_dump($request->all()); 
+        if ($keyword = $request->input('search') != null) {
+            $res = Order::where('order_num','like','%'.$keyword.'%')->orderBy('order_status','ASC')->paginate(10);
+        }else{
+            $res = Order::orderBy('order_status','ASC')->paginate(10);
+        }
+        //总数
+        $total = Order::count();
+        return view('admin.order.order_list',['res'=>$res,'total'=>$total,'request'=>$request->all()]);
     }
 
     /** 
@@ -100,8 +107,36 @@ class Order_listController extends Controller
      */
     public function detail(Request $request)
     {
-        var_dump($request->all());
-        return view('admin.order.order_detail');
+        $id = $request->input('id'); 
+
+        //订单详情信息
+        $detail = DB::table('order_detail')
+        ->where('order_detail.order_id','=',$id)
+        ->get();
+        //订单信息
+        $order = DB::table('order_list')
+        ->where('order_list.order_id','=',$id)
+        ->get();
+        // exit;
+        //优惠券信息
+        foreach ($order as $v) {
+            // echo $id;
+            if ($v->coupon_id == 0) {
+                $coupon = DB::table('order_list')
+                ->where('order_list.order_id','=',$v->order_id)
+                ->select('order_list.payable','order_list.total')
+                ->get();
+            }else{
+                $coupon = DB::table('coupon_make')
+                ->join('order_list','coupon_make.coupon_id','=','order_list.coupon_id')
+                ->where([['order_list.order_id','=',$v->order_id]])
+                ->select('order_list.total','order_list.payable','coupon_make.*')
+                ->get();
+            }
+            
+        }
+
+        return view('admin.order.order_detail',['order'=>$order,'detail'=>$detail,'coupon'=>$coupon]);
     }
 
 }

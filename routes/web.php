@@ -15,7 +15,7 @@
 /********************前端路由***********************/
 
 //首页
-Route::resource('/','Home\IndexController');
+Route::resource('/','Home\IndexController')->middleware('web');
 
 //登陆注册页面
 Route::resource('/login','Home\LoginController');
@@ -50,6 +50,9 @@ Route::get('/addCart','Home\ProductDetailsController@addCart');
 //Q友情链接页面
 Route::resource('/links','Home\LinksController');
 
+//Q新闻资讯页面
+Route::resource('/notice','Home\NoticeController');
+
 //购物车页面
 Route::resource('/cart','Home\CartController');
 
@@ -60,23 +63,44 @@ Route::resource('/pay','Home\PayController');
 Route::resource('/contact','Home\ContactController');
 
 //个人中心页面 路由组包含填写中间件来绑定用户是否登陆
-Route::group(['prefix' => 'user'],function(){
+Route::group(['prefix' => 'user','middleware'=>'login'],function(){
 	//欢迎页
 	Route::resource('/welcome','Home\User\WelcomeController');
 	//个人资料
 	Route::resource('/info','Home\User\UserInfoController');
 	//收货地址
 	Route::resource('/address','Home\User\UserAddressController');
+	//设置默认地址
+	Route::get('/moren/{id}','Home\user\UserAddressController@moren');
 	//优惠卷
 	Route::resource('/coupon','Home\User\UserCouponController');
 	//修改密码
 	Route::resource('/modifypwd','Home\User\ModifyPwdController');
-	//我的订单
-	Route::resource('/order','Home\User\OrderListController');
 	//我的收藏
 	Route::resource('/collection','Home\User\UserCollectionController');
 	//退货列表
 	Route::resource('/return','Home\User\OrderReturnController');
+	//w订单生成
+	Route::resource('/order_pay','Home\Order_payController');
+	//w订单内数量改变
+	Route::get('/ordernum_change','Home\Order_payController@change');
+	//w订单支付
+	Route::resource('/order_cart','Home\Order_cartController');
+	//w我的订单 
+	Route::resource('/my_order','Home\My_orderController');
+	//w ajax 查询优惠券信息
+	Route::get('/order_coupon','Home\Order_cartController@order_coupon');
+	//w 跳转支付宝接口
+	Route::get('/alipay','Home\Order_cartController@alipay');
+	//w 支付完成跳转路由
+	Route::get('/pay_money','Home\Order_cartController@pay_money');
+	//w 订单详情
+	Route::get('/order_detail','Home\My_orderController@order_detail');
+	//w 订单评价'
+	Route::get('/order_evaluation','Home\My_orderController@order_evaluation');
+	//w 处理订单评价
+	Route::post('/process_evaluation','Home\My_orderController@process_evaluation');
+	Route::get('/cart_del','Home\Order_payController@cart_del');
 });
 
 
@@ -107,6 +131,8 @@ Route::group(['prefix'=>'adminx','middleware'=>'adminlogin'],function(){
 	Route::get('/product_img_del','Admin\Product_listController@delete');
 	//Q产品属性
 	Route::resource('/product_attribute','Admin\Product_attributeController');
+	//Q反馈信息
+	Route::resource('/contact','Admin\ContactController');
 	//评论列表
 	Route::resource('/comment','Admin\CommentController');
 	//意见反馈
@@ -164,5 +190,9 @@ Route::group(['prefix'=>'adminx','middleware'=>'adminlogin'],function(){
 	Route::get('/coupon_send','Admin\Coupon_makeController@send');
 	//w优惠券执行发送
 	Route::post('/coupon_dosend','Admin\Coupon_makeController@dosend');
+	//w 评论列表
+	Route::resource('/comment','Admin\CommentController');
+	//w 评论详情
+	Route::get('/evaluation','Admin\CommentController@evaluation');
 
 });

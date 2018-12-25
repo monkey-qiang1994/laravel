@@ -28,8 +28,10 @@
   <i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
   <div class="page-container">
     <div class="text-r">
-      <input type="text" name="" id="" placeholder=" 产品名称" style="width:250px" class="input-text">
-      <button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜产品</button>
+    <form action="product_list" method="get">
+      <input type="text" name="keyword" placeholder="产品名称" style="width:250px" class="input-text">
+      <button class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜产品</button>
+    </form>
     </div>
 
     @if(Session::has('success'))
@@ -40,7 +42,7 @@
     
     <div class="cl pd-5 bg-1 bk-gray mt-20">
       <span class="l">
-        <a href="javascript:;" class="btn btn-danger radius" id="delete"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+        <a href="javascript:;" class="btn btn-danger radius" id="delete" onclick="return confirm('确定要删除?');"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
         <a class="btn btn-primary radius" href="product_list/create"><i class="Hui-iconfont">&#xe600;</i> 添加产品</a>
       </span>
     <span class="r">共有数据：<strong>{{count($total)}}</strong> 条</span>

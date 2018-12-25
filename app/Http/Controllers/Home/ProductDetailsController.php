@@ -42,9 +42,49 @@ class ProductDetailsController extends Controller
 
         //取出跟产品关联的图片信息
         $images = DB::table('products_images')->where('product_id','=',$id)->get();
-        ;
+         //判断该商品是否收藏 收藏显示红心,没收藏白心
+        $cang=count(DB::table('shoucang')->where('user_id','=',session('user_id'))->where('product_id','=',$id)->first());
+
+        //获取该商品的评价信息
+        $evaluation = DB::table('evaluation_product')
+        ->join('homeuser','evaluation_product.user_id','=','homeuser.user_id')
+        ->join('user_details','homeuser.user_id','=','user_details.user_id')
+        ->where('evaluation_product.product_id','=',$id)
+        ->select('evaluation_product.*','homeuser.*','user_details.pic')
+        ->get();
+
+        //获取评价信息中为好评的数量
+        $haoping = DB::table('evaluation_product')
+        ->join('homeuser','evaluation_product.user_id','=','homeuser.user_id')
+        ->join('user_details','homeuser.user_id','=','user_details.user_id')
+        ->where([['product_id','=',$id],['evaluation_grede','=',0]])
+        ->select('evaluation_product.*','homeuser.*','user_details.pic')
+        ->get();
+
+        //获取评价信息中为中评的数量
+        $zhongping= DB::table('evaluation_product')
+        ->join('homeuser','evaluation_product.user_id','=','homeuser.user_id')
+        ->join('user_details','homeuser.user_id','=','user_details.user_id')
+        ->where([['product_id','=',$id],['evaluation_grede','=',1]])
+        ->select('evaluation_product.*','homeuser.*','user_details.pic')
+        ->get();
+
+        //获取评价信息中为差评的数量
+        $chaping= DB::table('evaluation_product')
+        ->join('homeuser','evaluation_product.user_id','=','homeuser.user_id')
+        ->join('user_details','homeuser.user_id','=','user_details.user_id')
+        ->where([['product_id','=',$id],['evaluation_grede','=',2]])
+        ->select('evaluation_product.*','homeuser.*','user_details.pic')
+        ->get();
+
+        //获取评价信息的图片
+        $evaluation_pic = DB::table('evaluation_pic')->get();
+
+        //获取购物车中的数量
+        $cart_num = $this->cart_num();
+
         //加载模版
-        return view('home.product_details',['product'=>$product,'att_list'=>$att_list,'cate_att'=>$cate_att,'images'=>$images,'recommend'=>$recommend]);
+        return view('home.product_details',['product'=>$product,'att_list'=>$att_list,'cate_att'=>$cate_att,'images'=>$images,'recommend'=>$recommend,'cart_num'=>$cart_num,'cang'=>$cang,'evaluation'=>$evaluation,'evaluation_pic'=>$evaluation_pic,'haoping'=>$haoping,'zhongping'=>$zhongping,'chaping'=>$chaping]);
     }
 
     public function addCart(Request $request){
@@ -83,7 +123,7 @@ class ProductDetailsController extends Controller
         //把遍历出来的内容拿来和ajax传过来的内容做比较,
         //如果产品ID和产品属性跟数据表中的某一条值匹配上说明就是在原有的基础上做数量的增加,
         //原有基础上递增我用了increment方法,反之就是添加新产品到cart表中
-        if($db != '[]' and in_array($add['product_id'],$product_id) and in_array($add['product_att'],$product_att)){
+        if(!$db->isEmpty() and in_array($add['product_id'],$product_id) and in_array($add['product_att'],$product_att)){
            
             if(DB::table('cart')
                 ->where([

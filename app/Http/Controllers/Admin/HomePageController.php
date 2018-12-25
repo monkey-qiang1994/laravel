@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use DB;
 
 class HomePageController extends Controller
 {
@@ -14,8 +15,8 @@ class HomePageController extends Controller
      */
     public function index()
     {
-        //
-        return view('admin.public');
+        $messages = DB::table('contact')->where('status','=',1)->get();
+        return view('admin.public',['messages'=>$messages]);
     }
 
     /**

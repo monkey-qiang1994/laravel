@@ -31,6 +31,7 @@
     @endif
 
   <form class="form form-horizontal" id="form-article-add" method="post" action="/adminx/coupon_make" >
+    <input type="hidden" name="coupon_status" value="0">
     <div class="row cl">
       <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>优惠券说明：</label>
       <div class="formControls col-xs-8 col-sm-9">

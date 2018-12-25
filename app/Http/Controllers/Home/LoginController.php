@@ -28,8 +28,11 @@ class LoginController extends Controller
      */
     public function create()
     {
+        //获取购物车中的数量
+        $cart_num = $this->cart_num();
+
         //加载注册/登陆页面
-        return view('home.login');
+        return view('home.login',['cart_num'=>$cart_num]);
     }
 
     /**
@@ -73,7 +76,7 @@ class LoginController extends Controller
         //在闭包函数内部使用闭包函数外部的变量 必须use 导入 a 是模板
         Mail::send('Home.Register.reset',['id'=>$id,'token'=>$token],function($message)use($email){
             //发送主题
-            $message->subject('激活');
+            $message->subject('菲诺商城-激活账户');
             //接收方
             $message->to($email);
         });

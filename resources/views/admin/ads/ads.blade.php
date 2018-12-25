@@ -55,7 +55,7 @@
           <td>{{$v->ads_id}}</td>
           <td>{{$v->ads_name}}</td>
           <td>{{$v->ads_position}}</td>
-          <td><img src="../Uploads/{{$v->ads_path}}" style="height: 100px"></td>
+          <td><img src="../uploads/slider/{{$v->ads_path}}" style="height: 100px"></td>
           @if($v->ads_status == '0')
           <td class="td-status"><span class="label label-success radius">已发布</span></td>
           @else

@@ -21,7 +21,7 @@
 <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
-<title>H-ui.admin v3.1</title>
+<title>后台管理系统</title>
 <meta name="keywords" content="H-ui.admin v3.1,H-ui网站后台模版,后台模版下载,后台管理系统模版,HTML后台模版下载">
 <meta name="description" content="H-ui.admin v3.1，是一款由国人开发的轻量级扁平化网站后台模板，完全免费开源的网站后台管理系统模版，适合中小型CMS后台系统。">
 </head>
@@ -47,14 +47,14 @@
 			<ul class="cl">
 				<li>超级管理员</li>
 			<li class="dropDown dropDown_hover">
-					<a href="#" class="dropDown_A">{{session('username')}}<i class="Hui-iconfont">&#xe6d5;</i></a>
+					<a href="#" class="dropDown_A">{{session('usernamex')}}<i class="Hui-iconfont">&#xe6d5;</i></a>
 					<ul class="dropDown-menu menu radius box-shadow">
 						<li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
 						<li><a href="#">切换账户</a></li>
 						<li><a href="/adminlogin">退出</a></li>
 				</ul>
 			</li>
-				<li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
+				<li id="Hui-msg"> <a href="#" title="您有{{count($messages)}}条未读消息"><span class="badge badge-danger">{{count($messages)}}</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
 				<li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
 					<ul class="dropDown-menu menu radius box-shadow">
 						<li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
@@ -90,7 +90,7 @@
 		</dd>
 	</dl>
 		<dl id="menu-picture">
-			<dt><i class="Hui-iconfont">&#xe613;</i> 友情链接<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dt><i class="Hui-iconfont">&#xe6f1;</i> 友情链接<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd>
 				<ul>
 					<li><a data-href="/adminx/links" data-title="图片管理" href="javascript:void(0)">友情链接管理</a></li>
@@ -110,17 +110,24 @@
 		</dd>
 	</dl>
 	<dl id="menu-product">
-			<dt><i class="Hui-iconfont">&#xe620;</i> 订单管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-			<dd>
-				<ul>
-					<li><a data-href="/adminx/order_list" data-title="订单管理" href="javascript:void(0)">订单管理</a></li>
-					<li><a data-href="/adminx/comment" data-title="评论列表" href="javascript:;">评论列表</a></li>
-
-
+		<dt><i class="Hui-iconfont">&#xe687;</i> 用户反馈<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+		<dd>
+			<ul>
+				<li><a data-href="/adminx/contact" data-title="信息列表" href="javascript:;">信息列表</a></li>
 			</ul>
 		</dd>
+	</dl>
 	<dl id="menu-product">
-			<dt><i class="Hui-iconfont">&#xe620;</i> 优惠券<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+		<dt><i class="Hui-iconfont">&#xe687;</i> 订单管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+		<dd>
+			<ul>
+				<li><a data-href="/adminx/order_list" data-title="订单管理" href="javascript:void(0)">订单管理</a></li>
+				<li><a data-href="/adminx/comment" data-title="评论列表" href="javascript:;">评论列表</a></li>
+			</ul>
+		</dd>
+	</dl>
+	<dl id="menu-product">
+			<dt><i class="Hui-iconfont">&#xe6b6;</i> 优惠券<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd>
 				<ul>
 					<li><a data-href="/adminx/coupon_make" data-title="优惠券生成" href="javascript:void(0)">优惠券生成</a></li>
@@ -133,8 +140,7 @@
 			<dd>
 				<ul>
 					<li><a data-href="/adminx/comment" data-title="评论列表" href="javascript:;">评论列表</a></li>
-					<li><a data-href="/adminx/feedback_list" data-title="意见反馈" href="javascript:void(0)">意见反馈</a></li>
-			</ul>
+				</ul>
 		</dd>
 	</dl>
 		<dl id="menu-member">

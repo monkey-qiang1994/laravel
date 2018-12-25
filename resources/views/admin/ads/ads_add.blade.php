@@ -43,7 +43,7 @@
         <span class="select-box">
         <select name="ads_position" class="select">
           <option disabled="disabled" selected="selected">请选择添加位置</option>
-          <option value="1">位置1</option>
+          <option value="1">轮播图</option>
           <option value="2">位置2</option>
           <option value="3">位置3</option>
           <option value="4">位置4</option>

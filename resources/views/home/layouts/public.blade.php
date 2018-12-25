@@ -34,14 +34,14 @@
 			</div>
 			<div class="pull-right">
 			@if(session('username'))
-				<a href=""><span class="cr">{{session('username')}}</span></a><a href="/login"><span class="cr">退出</span></a>
+				<a href="/user/welcome"><span class="cr">{{session('username')}}</span></a><a href="/login"><span class="cr">退出</span></a>
 			@else
 				<a href="/login/create"><span class="cr">登录</span></a>
 				<a href="/login/create?p=register">注册</a>
 			@endif	
 
 				<a href="/user/welcome">我的U袋</a>
-				<a href="udai_order.html">我的订单</a>
+				<a href="/user/my_order">我的订单</a>
 			</div>
 		</div>
 	</div>
@@ -50,22 +50,21 @@
 		<div class="inner">
 			<a class="logo" href="http://www.laravel.com/"><img src="/home/images/icons/logo.jpg" alt="U袋网" class="cover"></a>
 			<div class="search-box">
-				<form class="input-group">
-					<input placeholder="Ta们都在搜U袋网" type="text">
+				<form class="input-group" action="list" method="get">
+					<input placeholder="请输入关键词" type="text" name="keyword">
 					<span class="input-group-btn">
-						<button type="button">
+						<button type="submit">
 							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 						</button>
 					</span>
 				</form>
 				<p class="help-block text-nowrap">
-					<a href="">连衣裙</a>
-					<a href="">裤</a>
-					<a href="">衬衫</a>
-					<a href="">T恤</a>
-					<a href="">女包</a>
-					<a href="">家居服</a>
-					<a href="">2017新款</a>
+					<a href="http://www.laravel.com/list?cate_id=17">连衣裙</a>
+					<a href="http://www.laravel.com/list?cate_id=8">牛仔裤</a>
+					<a href="http://www.laravel.com/list?cate_id=16">衬衫</a>
+					<a href="http://www.laravel.com/list?cate_id=14">T恤</a>
+					<a href="http://www.laravel.com/list?cate_id=5">女包</a>
+					<a href="http://www.laravel.com/list?cate_id=4">活力童装</a>
 				</p>
 			</div>
 			<div class="cart-box">

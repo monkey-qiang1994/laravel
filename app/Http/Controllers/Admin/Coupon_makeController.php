@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\AdminModel\Coupon;
 use App\AdminModel\Coupon_send;
+use DB;
 
 class Coupon_makeController extends Controller
 {
@@ -15,10 +16,22 @@ class Coupon_makeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    { 
+        $time = time();
         //优惠券生成模块
-        $res = Coupon::select()->get();
-        // dd($res);
+        $coupon_list = DB::table('coupon_make')->get();
+        //查看数据库中优惠券是否过期
+        foreach ($coupon_list as  $v) {
+            if ($time > $v->coupon_time) {
+                DB::table('coupon_make')->where('coupon_id','=',$v->coupon_id)->update(['coupon_status'=>1]);
+                //改变发送的过期的优惠券状态
+                DB::table('coupon_send')
+                ->join('coupon_make','coupon_make.coupon_id','=','coupon_send.coupon_id')
+                ->where('coupon_send.coupon_id','=',$v->coupon_id)
+                ->update(['coupon_send.coupon_status'=>1]);
+            }
+        }
+        $res = DB::table('coupon_make')->get();
         return view('admin.coupon.coupon_make',['res'=>$res]);
     }
 
@@ -111,6 +124,14 @@ class Coupon_makeController extends Controller
     {
         //将生成的优惠券id 发送给会员
         $id = $request->input('id');
+        //查看优惠券是否过期
+        $info = DB::table('coupon_make')->where('coupon_id','=',$id)->get();
+        // dd($info);
+        foreach ($info as $v) {
+           if ($v->coupon_status == 1) {
+              return redirect('/adminx/coupon_make')->with('success','优惠券已过期,发送失败');
+           }
+        }
         // echo $id;
         //根据id查询到优惠券详情
         $res = Coupon::where('coupon_id','=',$id)->select()->get();

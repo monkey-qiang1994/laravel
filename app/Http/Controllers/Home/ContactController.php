@@ -15,8 +15,11 @@ class ContactController extends Controller
      */
     public function index()
     {
+        //获取购物车中的数量
+        $cart_num = $this->cart_num();
+
         //加载模版
-        return view('home.contact');
+        return view('home.contact',['cart_num'=>$cart_num]);
     }
 
     /**
@@ -37,7 +40,13 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->except('_token');
+
+        if(DB::table('contact')->insert($data)){
+            echo "<script>alert('反馈信息已发送,感谢您的支持!');window.location.href='http://www.laravel.com/contact'</script>";
+        }else{
+            echo "<script>alert('抱歉,反馈信息发送失败!');window.location.href='http://www.laravel.com/contact'</script>";
+        }
     }
 
     /**

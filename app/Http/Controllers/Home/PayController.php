@@ -15,8 +15,10 @@ class PayController extends Controller
      */
     public function index()
     {
+        //获取购物车中的数量
+        $cart_num = $this->cart_num();
         //加载模版
-        return view('home.cart_pay');
+        return view('home.cart_pay'['cart_num'=>$cart_num]);
     }
 
     /**

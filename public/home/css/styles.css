@@ -47,7 +47,7 @@ body {overflow-y: scroll}
 	width: 100%;
 	height: 36px;
 	padding: 8px;
-	border: 1px solid #b31e22;
+	border: 1px solid #db167c;
 }
 .search-box button {
 	color: #fff;
@@ -55,8 +55,8 @@ body {overflow-y: scroll}
 	padding: 0 20px;
 	height: 36px;
 	line-height: 36px;
-	border: 1px solid #b31e22;
-	background-color: #b31e22;
+	border: 1px solid #db167c;
+	background-color: #db167c;
 }
 .search-box .help-block a {
 	color: #999;
@@ -1702,7 +1702,6 @@ img.zoom-img {
 /* 站内信和新闻 */
 .panel-message__div > .pull-left, .panel-message__div > .pull-right {
 	width: 400px;
-	height: 700px;
 	margin: 10px 0 50px;
 }
 .panel-message__div > .message-box {

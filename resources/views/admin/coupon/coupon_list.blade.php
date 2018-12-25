@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html> 
 <head>
 <meta charset="utf-8">
 <meta name="renderer" content="webkit|ie-comp|ie-stand">
@@ -60,12 +60,12 @@
         <td>1{{$v->coupon_price}}</td>
         <td>{{Date('Y-m-d H:i:s',$v->coupon_time)}}</td>
         @if($v->coupon_status == 0)
-        <td class="td-status"><span class="label label-success radius">已启用</span></td>
-        @endif
-        @if($v->coupon_status == 1)
-        <td class="td-status"><span class="label label-danger radius">已过期</span></td>
+        <td class="td-status"><span class="label label-success radius">未使用</span></td>
         @endif
         @if($v->coupon_status == -1)
+        <td class="td-status"><span class="label label-danger radius">已过期</span></td>
+        @endif
+        @if($v->coupon_status == 1)
         <td class="td-status"><span class="label label-info radius">已使用</span></td>
         @endif
         <td class="td-manage">
@@ -89,10 +89,10 @@
   </div>
 </div>
 <!--_footer 作为公共模版分离出去-->
-<script type="text/javascript" src="../admin/lib/jquery/1.9.1/jquery.min.js"></script> 
-<script type="text/javascript" src="../admin/lib/layer/2.4/layer.js"></script>
-<script type="text/javascript" src="../admin/static/h-ui/js/H-ui.min.js"></script> 
-<script type="text/javascript" src="../admin/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="/admin/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="/admin/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="/admin/static/h-ui/js/H-ui.min.js"></script> 
+<script type="text/javascript" src="/admin/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
 
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="../admin/lib/My97DatePicker/4.8/WdatePicker.js"></script> 

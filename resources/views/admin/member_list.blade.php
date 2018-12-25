@@ -19,6 +19,12 @@
 <script type="text/javascript" src="../admin/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
+<style type="text/css">
+	.text-c .btn {
+    float: left;
+    margin-left: 10px;
+	}
+</style>
 <title>会员管理</title>
 </head>
 <body>

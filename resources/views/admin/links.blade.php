@@ -19,54 +19,75 @@
 <script type="text/javascript" src="../admin/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
-<title>品牌管理</title>
+<title>友情链接管理</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span class="c-gray en">&gt;</span> 品牌管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 友情链接 <span class="c-gray en">&gt;</span> 友情链接管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-  <div class="text-c">
-    <form class="Huiform" method="post" action="" target="_self">
-      <input type="text" placeholder="分类名称" value="" class="input-text" style="width:120px">
-      <span class="btn-upload form-group">
-      <input class="input-text upload-url" type="text" name="uploadfile-2" id="uploadfile-2" readonly style="width:200px">
-      <a href="javascript:void();" class="btn btn-primary upload-btn"><i class="Hui-iconfont">&#xe642;</i> 上传logo</a>
-      <input type="file" multiple name="file-2" class="input-file">
-      </span> <span class="select-box" style="width:150px">
-      <select class="select" name="brandclass" size="1">
-        <option value="1" selected>国内品牌</option>
-        <option value="0">国外品牌</option>
-      </select>
-      </span><button type="button" class="btn btn-success" id="" name="" onClick="picture_colume_add(this);"><i class="Hui-iconfont">&#xe600;</i> 添加</button>
-    </form>
+
+  @if(Session::has('success'))
+    <div class="Huialert Huialert-success"><i class="Hui-iconfont">&#xe6a6;</i>{{Session::get('success')}}</div>
+  @elseif(Session::has('error'))
+    <div class="Huialert Huialert-error"><i class="Hui-iconfont">&#xe6a6;</i>{{Session::get('error')}}</div>
+  @endif
+
+  <div class="cl pd-5 bg-1 bk-gray mt-20">
+  <span class="l">
+    <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+  </span>
+  <span class="r">共有数据：<strong>{{count($links)}}</strong> 条</span>
   </div>
-  <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a></span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
   <div class="mt-20">
     <table class="table table-border table-bordered table-bg table-sort">
       <thead>
         <tr class="text-c">
           <th width="25"><input type="checkbox" name="" value=""></th>
           <th width="70">ID</th>
-          <th width="80">排序</th>
-          <th width="200">LOGO</th>
-          <th width="120">品牌名称</th>
+          <th width="80">网站名称</th>
+          <th width="200">网站链接</th>
+          <th width="120">联系邮箱</th>
           <th>具体描述</th>
+          <th width="100">状态</th>
           <th width="100">操作</th>
         </tr>
       </thead>
       <tbody>
+        @foreach($links as $link)
         <tr class="text-c">
-          <td><input name="" type="checkbox" value=""></td>
-          <td>1</td>
-          <td><input type="text" class="input-text text-c" value="1"></td>
-          <td><img src="temp/brand/dongpeng.jpeg"></td>
-          <td class="text-l"><img title="国内品牌" src="../admin/static/h-ui.admin/images/cn.gif"> 东鹏</td>
-          <td class="text-l">东鹏陶瓷被评为“中国名牌”、“国家免检产品”、“中国驰名商标”、http://www.dongpeng.net/</td>
-          <td class="f-14 product-brand-manage"><a style="text-decoration:none" onClick="product_brand_edit('品牌编辑','codeing.html','1')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="active_del(this,'10001')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+          <td class="text-c"><input name="" type="checkbox" value=""></td>
+          <td class="text-c">{{$link->link_id}}</td>
+          <td class="text-c">{{$link->web_name}}</td>
+          <td class="text-c">{{$link->web_link}}</td>
+          <td class="text-c">{{$link->email}}</td>
+          <td class="text-c">{{$link->introduction}}</td>
+          <td class="text-c">
+            <form action="links/{{$link->link_id}}" method="post">
+                {{csrf_field()}}
+                {{method_field('PUT')}}
+                @if($link->status == 0)
+                  <input type="hidden" name="display" value="1">
+                  <button type="submit" class="btn btn-success radius btn-status">审核通过</button>
+                @else
+                  <input type="hidden" name="display" value="0">
+                  <button type="submit" class="btn btn-danger radius btn-status">待审核</button>
+                @endif
+               </form>
+          </td>
+          <td class="f-14 text-c product-brand-manage">
+             <form action="links/{{$link->link_id}}" method="post" style="display: initial;">
+              {{ csrf_field() }}
+              {{ method_field('DELETE') }}
+              <button type="submit" class="btn btn-danger radius" onclick="return confirm('确定要删除?');" style="float:none;"><i class="Hui-iconfont">&#xe6e2;</i></button>
+            </form>
+          </td>
         </tr>
+        @endforeach
       </tbody>
     </table>
   </div>
 </div>
+
+
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="../admin/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="../admin/lib/layer/2.4/layer.js"></script>
