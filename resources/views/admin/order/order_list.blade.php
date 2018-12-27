@@ -40,7 +40,6 @@
           <th width="25"><input type="checkbox" name="" value=""></th>
           <th width="60">ID</th>
           <th width="60">用户名</th>
-          <th >地址</th>
           <th>订单编号</th>
           <th>商品数量</th>
           <th>总金额</th>
@@ -57,13 +56,15 @@
           <td><input type="checkbox" value="1" name=""></td>
           <td>{{$v->order_id}}</td>
           <td><a href="javascript:;" onclick="member_show('张三','/adminx/order_user?id={{$v->user_id}}','10001','360','400')"><i class="avatar size-L radius"><img alt="" src="/admin/static/h-ui/images/ucnter/avatar-default-S.gif"></i></a></td>
-          <td>{{$v->order_id}}</td>
           <td>{{$v->order_num}}</td>
           <td>{{$v->num}}</td>
           <td>{{$v->total}}</td>
           <td>{{$v->payable}}</td>
           <td>{{$v->created_at}}</td>
           <td>{{Date('Y-m-d H:i:s',$v->pay_at)}}</td>
+          @if($v->order_status == -1)
+          <td class="td-status"><span class="label label-info radius">已取消</span></td>
+          @endif
           @if($v->order_status == 0)
           <td class="td-status"><span class="label label-warning radius">待支付</span></td>
           @endif
@@ -80,7 +81,7 @@
           <td class="td-manage">
             <a href="javascript:;" style="text-decoration:none;font-size: 25px;" onclick="member_show('订单详情','/adminx/order_detail?id={{$v->order_id}}','10001','999','555')"><i class="Hui-iconfont">&#xe627;</i></a>
             @if($v->order_status == 1)
-            <a style="text-decoration:none;font-size: 25px;"  class="ml-5" onclick="member_send('发货','codeing.html','1')" href="javascript:;" title="发货"><i class="Hui-iconfont">&#xe669;</i></a> 
+            <a style="text-decoration:none;font-size: 25px;"  class="ml-5" href="/adminx/order_send?order_id={{$v->order_id}}"><i class="Hui-iconfont">&#xe669;</i></a> 
             @endif
           </td>
 
@@ -88,10 +89,21 @@
         @endforeach
       </tbody>
     </table>
-    <div style="float: right">
+    
+     
+
+    @if(Session::has('success'))
+    <div class="success" style="display: none">{{Session::get('success')}}</div>
+    @endif
+
+    @if(Session::has('error'))
+    <div class="error" style="display: none">{{Session::get('error')}}</div>
+    @endif
+    <div class="page">
       {{$res->appends($request)->render()}}
-    </div>
+      </div>
   </div>
+  
 </div>
 
 <!--_footer 作为公共模版分离出去-->
@@ -105,6 +117,24 @@
 <script type="text/javascript" src="/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
 <script type="text/javascript" src="/admin/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
+  //提示信息
+  var success = $('.success').html();
+  function modaldemo(){
+  $("#modal-demo").modal("show")}
+      function modalalertdemo(){
+      $.Huimodalalert(success,1000)}
+  if (success) {
+    modalalertdemo();
+  }
+  //提示信息
+  var success = $('.error').html();
+  function modaldemo(){
+  $("#modal-demo").modal("show")}
+      function modalalertdemo(){
+      $.Huimodalalert(success,1000)}
+  if (success) {
+    modalalertdemo();
+  }
 /*用户-添加*/
 function member_add(title,url,w,h){
   layer_show(title,url,w,h);

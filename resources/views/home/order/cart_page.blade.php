@@ -68,7 +68,13 @@
 									<div class="name ep3">{{$v->product_name}}</div>
 									<div class="type c9">{{$v->product_att}}</div>
 								</td>
-								<td>{{$v->price}}</td>
+								<td>
+									@if(isset($v->discount_price))
+									{{$v->discount_price}}
+									@else
+									{{$v->price}}
+									@endif
+								</td>
 								<td>
 									<div class="cart-num__box">
 										<input type="button" class="sub" value="-">
@@ -76,7 +82,14 @@
 										<input type="button" class="add" value="+">
 									</div>
 								</td>
-								<td id="price" >{{$v->product_num*$v->price}}</td>
+								<td id="price" >
+									
+									@if(isset($v->discount_price))
+									{{$v->product_num*$v->discount_price}}
+									@else
+									{{$v->product_num*$v->price}}
+									@endif
+								</td>
 								<td>
 										<input type="hidden" name="product_id" value="{{$v->product_id}}">
 										<a class="del" href="javascript:void(0)">删除</a>

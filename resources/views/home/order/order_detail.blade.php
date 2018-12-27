@@ -6,11 +6,21 @@
 		<!-- 引入侧边栏 -->
 			@include('home.layouts.sidebar')			
 			<div class="pull-right">
-				@foreach($order as $order_v)
+				@foreach($address as $order_v)
 				<div class="user-content__box clearfix bgf">
 					<div class="title">订单中心-订单{{$order_v->order_num}}</div>
 					<div class="order-info__box">
-						<div class="order-addr">收货地址：<span class="c6">{{$order_v->address_id}}</span></div>
+						
+						<div class="order-addr">收货地址：
+							<br/>
+							<b>收货人:</b> {{$order_v->consignee}} &nbsp;|&nbsp; <b>联系电话: </b>{{$order_v->phone}}
+							<br/>
+							<b>省份:</b> {{$order_v->province}} &nbsp;|&nbsp; <b>城市: </b>{{$order_v->city}}
+							<br/>
+							<b>详细地址:</b> {{$order_v->area}},{{$order_v->town}},{{$order_v->address}}
+							<hr/>
+						</div>
+						
 						<div class="order-info">
 							订单信息
 							<table>
@@ -31,18 +41,26 @@
 							<div class="tdf1">数量</div>
 							<div class="tdf1">单价</div>
 							<div class="tdf1">合计</div>
+							<div class="tdf1">评价</div>
 						</div>
 						@foreach($detail as $detail_v)
 						<div class="order-item__list">
 							<div class="item">
 								<div class="tdf3">
-									<a href="item_show.html"><div class="img"><img src="{{$detail_v->product_img}}" alt="" class="cover"></div>
+									<a href="/details/{{$detail_v->product_id}}"><div class="img"><img src="{{$detail_v->product_img}}" class="cover"></div>
 									<div class="ep2 c6">{{$detail_v->product_name}}</div></a>
 									<div class="attr ep">{{$detail_v->product_attr}}</div>
 								</div>
 								<div class="tdf1">{{$detail_v->product_num}}</div>
 								<div class="tdf1">¥{{$detail_v->product_price}}</div>
 								<div class="tdf1">¥{{$detail_v->product_num*$detail_v->product_price}}</div>
+								<div class="tdf1">
+									@if($detail_v->evaluation_status == 0)
+									<a href="/user/order_evaluation?id={{$detail_v->order_id}}&product_id={{$detail_v->product_id}}">去评价</a>
+									@else
+									<a href="/">已评价</a>
+									@endif
+								</div>
 							</div>
 						</div>
 						@endforeach

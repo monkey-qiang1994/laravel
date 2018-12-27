@@ -13,7 +13,7 @@ class My_orderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //我的订单
         //根据用户的id 根据状态查询所有的订单数据
@@ -22,10 +22,47 @@ class My_orderController extends Controller
         //所有订单数据
         $all = DB::table('order_list')
         ->where('order_list.user_id','=',$id)
-        ->select('order_list.*')
+        ->join('address','order_list.address_id','=','address.add_id')
+        ->select('order_list.*','address.*')
         ->groupBy('order_list.order_id')
         ->orderBy('order_list.order_status')
-        ->get();
+        ->paginate(5);
+
+        //获取待付款订单数据
+        $payment = DB::table('order_list')
+        ->where([['order_list.user_id','=',$id],['order_list.order_status','=',0]])
+        ->join('address','order_list.address_id','=','address.add_id')
+        ->select('order_list.*','address.*')
+        ->groupBy('order_list.order_id')
+        ->orderBy('order_list.order_status')
+        ->paginate(5);
+
+        //获取待发货订单数据
+        $wait_shipped = DB::table('order_list')
+        ->where([['order_list.user_id','=',$id],['order_list.order_status','=',1]])
+        ->join('address','order_list.address_id','=','address.add_id')
+        ->select('order_list.*','address.*')
+        ->groupBy('order_list.order_id')
+        ->orderBy('order_list.order_status')
+        ->paginate(5);
+
+        //获取待收货订单数据
+        $receiving = DB::table('order_list')
+        ->where([['order_list.user_id','=',$id],['order_list.order_status','=',2]])
+        ->join('address','order_list.address_id','=','address.add_id')
+        ->select('order_list.*','address.*')
+        ->groupBy('order_list.order_id')
+        ->orderBy('order_list.order_status')
+        ->paginate(5);
+
+        //获取待评价订单数据
+        $evaluate = DB::table('order_list')
+        ->where([['order_list.user_id','=',$id],['order_list.order_status','=',3]])
+        ->join('address','order_list.address_id','=','address.add_id')
+        ->select('order_list.*','address.*')
+        ->groupBy('order_list.order_id')
+        ->orderBy('order_list.order_status')
+        ->paginate(5);
         
         if (!$all->isEmpty()) {
             //遍历获取所有优惠券信息
@@ -44,7 +81,8 @@ class My_orderController extends Controller
         //获取购物车中的数量
         $cart_num = $this->cart_num();
         // exit;
-        return view('home.order.my_order',['all'=>$all,'coupon'=>$coupon,'cart_num'=>$cart_num]);
+        return view('home.order.my_order',
+            ['all'=>$all,'coupon'=>$coupon,'cart_num'=>$cart_num,'request'=>$request->all(),'payment'=>$payment,'wait_shipped'=>$wait_shipped,'receiving'=>$receiving,'evaluate'=>$evaluate]);
 
     } 
 
@@ -116,13 +154,22 @@ class My_orderController extends Controller
 
     public function order_detail(Request $request)
     {
-        // var_dump($request->all());
+
         $id = $request->input('order_id'); 
 
         //订单详情信息
-        $detail = DB::table('order_detail')
+         $detail = DB::table('order_detail')
         ->where('order_detail.order_id','=',$id)
         ->get();
+
+        //获取订单地址
+        $address = DB::table('order_list')
+        ->join('order_detail','order_list.order_id','=','order_detail.order_id')
+        ->join('address','address.add_id','=','order_list.address_id')
+        ->where('order_list.order_id','=',$id)
+        ->groupBy('order_list.order_id')
+        ->get();
+
         //订单信息
         $order = DB::table('order_list')
         ->where('order_list.order_id','=',$id)
@@ -146,61 +193,68 @@ class My_orderController extends Controller
         }
         //获取购物车中的数量
         $cart_num = $this->cart_num();
-        return view('home.order.order_detail',['order'=>$order,'detail'=>$detail,'coupon'=>$coupon,'cart_num'=>$cart_num]);
+        return view('home.order.order_detail',['order'=>$order,'detail'=>$detail,'coupon'=>$coupon,'cart_num'=>$cart_num,'address'=>$address]);
     }
+    
+   
+
 
     public function order_evaluation(Request $request)
     {
         // echo "订单评价";
         $id = $request->input('id');
-        // echo $id;
-        $detail = DB::table('order_list')
-        ->join('order_detail','order_detail.order_id','=','order_list.order_id')
-        ->where('order_list.order_id','=',$id)
+        $product_id = $request->input('product_id');
+        $detail = DB::table('order_detail') 
+        ->join('order_list','order_detail.order_id','=','order_list.order_id')
+        ->where([['order_detail.order_id','=',$id],['order_detail.product_id','=',$product_id]])
         ->get();
-
-        $evaluation = DB::table('order_list')
-        ->join('order_detail','order_detail.order_id','=','order_list.order_id')
-        ->where('order_list.order_id','=',$id)
-        ->groupBy('order_detail.product_id')
-        ->get();
-        //获取购物车中的数量
+        
         $cart_num = $this->cart_num();
-        return view('home.order.order_evaluation',['detail'=>$detail,'evaluation'=>$evaluation,'cart_num'=>$cart_num]);
+        return view('home.order.order_evaluation',['detail'=>$detail,'cart_num'=>$cart_num]);
     }
 
-    public function process_evaluation(Request $request)
+        public function process_evaluation(Request $request)
     {
         
-        //所有信息
+            //所有信息
         $input = $request->all();
         //评价的商品的id
         $product_id = $request->input('product_id');
+        
         //当前的时间
         $time = time();
         //当前的订单id
         $order_id = $request->input('order_id');
+
+
         foreach ($product_id as $v) {
             //判断当前商品是否有文件上传
-            if ($request->hasFile('pic'.$v)) {
-                //初始化名字
-                $pic_name=time()+rand(1,10000);
-                //获取上传文件的后缀
-                $ext=$request->file("pic".$v)->getClientOriginalExtension();
-                //将文件移动到指定目录下
-                $request->file("pic".$v)->move("./uploads/evaluation",$pic_name.".".$ext);
-                //手动拼接路径
-                $path['pic_path'] = "/uploads/evaluation/".$pic_name.".".$ext;
-                //插入数据表,返回插入的id
-                $pic_id = DB::table('evaluation_pic')->insertGetId($path);
-                $arr[$v]['pic_id'] = $pic_id;
-                echo $pic_id;
+            if (isset($input['pic'])) {
+                $file = $input['pic'];
+                foreach ($file as $k=>$file_v) {
+                    
+                    //初始化名字
+                    $pic_name=time()+rand(1,10000);
+                    //获取上传文件的后缀
+                    $ext=$file_v->getClientOriginalExtension();
+                    //将文件移动到指定目录下
+                    $file_v->move("./uploads/evaluation",$pic_name.".".$ext);
+                    //手动拼接路径
+                    $path['pic_path'] = "/uploads/evaluation/".$pic_name.".".$ext;
+                    //插入数据表,返回插入的id
+                    $pic_id = DB::table('evaluation_pic')->insertGetId($path);
+                    $pic[$pic_id]= $pic_id;
+                }
+            }else{
+                $pic = array();
             }
 
+            
             //评价星级
             if (in_array($request->input('grade'.$v),$input)) {
                 $arr[$v]['evaluation_grede'] = $request->input('grade'.$v);
             }
+
             //评价内容
             if (in_array($request->input('content'.$v),$input)) {
                 if ($request->input('content'.$v) == null) {
@@ -213,37 +267,83 @@ class My_orderController extends Controller
             $arr[$v]['order_id'] = $order_id;
             $arr[$v]['product_id']=$v;
             $arr[$v]['evaluation_time'] = $time;
+            $arr[$v]['user_id'] = session('user_id');
 
         }
+
+        $count = count($arr);
+
+        $num = 0;
 
         foreach ($arr as $value) {
             //当存在有图片id时,获取插入后的id插入到关联的图片表中
-            if (array_key_exists('pic_id',$value)) {
-                //图片的id
-                $pic_id = $value['pic_id'];
-                //插入成功后返回的评价表的id
-                $evaluation_id = DB::table('evaluation_product')->insertGetId($value);
-                if (DB::table('evaluation_pic')->where('pic_id','=',$pic_id)->update(['evaluation_id'=>$evaluation_id])) {
-                    //当信息插入成功后,将订单的状态改为4
-                    DB::table('order_list')->where('order_id','=',$order_id)->update(['order_status'=>4]);
-
-                    return redirect('/user/my_order')->with('success','评价成功感谢您的支持');
-                }else{
-                    return redirect('/user/my_order')->with('error','评价失败-请刷新后重试');
-                }                
-            }else{
-                if (DB::table('evaluation_product')->insert($value)) {
-                    //当信息插入成功后,将订单的状态改为4
-                    DB::table('order_list')->where('order_id','=',$order_id)->update(['order_status'=>4]);
-                    return redirect('/user/my_order')->with('success','评价成功感谢您的支持');
-                }else{
-                    return redirect('/user/my_order')->with('error','评价失败-请刷新后重试');
-                }
-                
+            $evaluation_id = DB::table('evaluation_product')->insertGetId($value);
+            
+            foreach ($pic as $v) {
+                DB::table('evaluation_pic')->where('pic_id','=',$v)->update(['evaluation_id'=>$evaluation_id]);
             }
+            
+            $num++;
            
         }
 
+            //当所有步骤执行完后跳转
+            if ($num == $count) {
+
+                 DB::table('order_detail')->where([['order_id','=',$order_id],['product_id','=',$product_id[0]]])->update(['evaluation_status'=>1]);
+
+
+            //查询队员订单中是否还有评价状态为0的(未评价)
+            $eva_status = DB::table('order_detail')->where([['order_id','=',$order_id],['evaluation_status','=',0]])->get();
+
+            if (isset($evaluation_id)) {
+               
+                if($eva_status->isEmpty()){
+                //当信息插入成功后,将订单的状态改为4
+                DB::table('order_list')->where('order_id','=',$order_id)->update(['order_status'=>4]);
+                }
+
+            }else{
+
+                // echo "没有图片上传";
+                DB::table('evaluation_product')->insert($value);
+                //当信息插入成功后,将订单的状态改为4
+                if($eva_status->isEmpty()){
+                DB::table('order_list')->where('order_id','=',$order_id)->update(['order_status'=>4]);
+                }
+            }
+
+
+                return redirect('/user/my_order')->with('success','评价成功感谢您的支持');
+            }else{
+                return redirect('/user/my_order')->with('error','评价失败-请刷新后重试');
+            }
+
+    }
+
+
+    public function cancel_order(Request $request)
+    {
+        //订单id
+        $order_id = $request->input('order_id');
+
+        if (DB::table('order_list')->where('order_id','=',$order_id)->update(['order_status'=>-1])) {
+            return redirect('/user/my_order')->with('success','取消订单成功');
+        }else{
+            return redirect('/user/my_order')->with('success','取消订单失败,请联系管理员');
+        }
+    }
+
+    public function receipt(Request $request)
+    {
+        //订单id
+        $order_id = $request->input('order_id');
+
+        if (DB::table('order_list')->where('order_id','=',$order_id)->update(['order_status'=>3])) {
+            return redirect('/user/my_order')->with('success','收货成功啦!快去评价吧');
+        }else{
+            return redirect('/user/my_order')->with('success','emmmm... 收货失败了');
+        }        
     }
 
 

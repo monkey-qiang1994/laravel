@@ -18,9 +18,9 @@ class Order_listController extends Controller
         //订单管理
         // var_dump($request->all()); 
         if ($keyword = $request->input('search') != null) {
-            $res = Order::where('order_num','like','%'.$keyword.'%')->orderBy('order_status','ASC')->paginate(10);
+            $res = Order::where('order_num','like','%'.$keyword.'%')->orderBy('order_status','ASC')->paginate(5);
         }else{
-            $res = Order::orderBy('order_status','ASC')->paginate(10);
+            $res = Order::orderBy('order_status','ASC')->paginate(5);
         }
         //总数
         $total = Order::count();
@@ -96,10 +96,24 @@ class Order_listController extends Controller
     /**
      * 订单用户
      */
-    public function user()
+    public function user(Request $request)
     {
         //用户
-        return view('admin.order.order_user');
+        $user_id = $request->input('id');
+        // var_dump($user_id);
+        $user = DB::table('homeuser')
+        // ->join('user_details','user_details.user_id','=','homeuser.user_id')
+        ->where('homeuser.user_id','=',$user_id)
+        ->get();
+
+        foreach ($user as $v) {
+            $pic = DB::table('user_details')
+            ->join('homeuser','homeuser.user_id','=','user_details.user_id')
+            ->where('homeuser.user_id','=',$v->user_id)
+            ->get();
+        }
+
+        return view('admin.order.order_user',['user'=>$user,'pic'=>$pic]);
     }
 
     /**
@@ -109,9 +123,16 @@ class Order_listController extends Controller
     {
         $id = $request->input('id'); 
 
-        //订单详情信息
         $detail = DB::table('order_detail')
         ->where('order_detail.order_id','=',$id)
+        ->get();
+
+        //订单详情信息
+        $address = DB::table('order_list')
+        ->join('order_detail','order_list.order_id','=','order_detail.order_id')
+        ->join('address','address.add_id','=','order_list.address_id')
+        ->where('order_list.order_id','=',$id)
+        ->groupBy('order_list.order_id')
         ->get();
         //订单信息
         $order = DB::table('order_list')
@@ -136,7 +157,20 @@ class Order_listController extends Controller
             
         }
 
-        return view('admin.order.order_detail',['order'=>$order,'detail'=>$detail,'coupon'=>$coupon]);
+        return view('admin.order.order_detail',['order'=>$order,'detail'=>$detail,'coupon'=>$coupon,'address'=>$address]);
+    }
+
+
+    public function order_send(Request $request)
+    {
+        //订单id
+        $order_id = $request->input('order_id');
+
+        if (DB::table('order_list')->where('order_id','=',$order_id)->update(['order_status'=>2])) {
+            return redirect('/adminx/order_list')->with('success','发货成功');
+        }else{
+            return redirect('/adminx/order_list')->with('success','发货失败');
+        }            
     }
 
 }

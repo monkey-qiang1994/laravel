@@ -236,7 +236,7 @@
 					<div class="swiper-wrapper">
 						<div class="swiper-slide">
 							@foreach($recommend as $list)
-							<a class="picked-item" href="http://www.laravel.com/details/{{$list->product_id}}">
+							<a class="picked-item" href="/details/{{$list->product_id}}">
 								<img src="{{$list->product_img}}" alt="" class="cover">
 								<div class="look_price">¥ {{$list->price}}</div>
 							</a>
@@ -329,13 +329,13 @@
 												{{$list->evaluation_connect}}
 											</div>
 											<div class="eval-imgs">
+											@foreach($evaluation_pic as $pic)
+												@if($pic->evaluation_id == $list->evaluation_id)
 												<div class="img-temp">
-													@foreach($evaluation_pic as $pic)
-														@if($pic->evaluation_id == $list->evaluation_id)
-														<img src="{{$pic->pic_path}}" data-src="{{$pic->pic_path}}" data-action="zoom" class="cover">
-														@endif
-													@endforeach
+													<img src="{{$pic->pic_path}}" data-src="{{$pic->pic_path}}" data-action="zoom" class="cover">
 												</div>
+												@endif
+											@endforeach
 											</div>
 											<div class="eval-time">
 												{{date("Y-m-d H:i:s",$list->evaluation_time)}}
@@ -366,13 +366,13 @@
 												{{$list->evaluation_connect}}
 											</div>
 											<div class="eval-imgs">
+											@foreach($evaluation_pic as $pic)
+												@if($pic->evaluation_id == $list->evaluation_id)
 												<div class="img-temp">
-													@foreach($evaluation_pic as $pic)
-														@if($pic->evaluation_id == $list->evaluation_id)
-														<img src="{{$pic->pic_path}}" data-src="{{$pic->pic_path}}" data-action="zoom" class="cover">
-														@endif
-													@endforeach
+													<img src="{{$pic->pic_path}}" data-src="{{$pic->pic_path}}" data-action="zoom" class="cover">
 												</div>
+												@endif
+											@endforeach
 											</div>
 											<div class="eval-time">
 												{{date("Y-m-d H:i:s",$list->evaluation_time)}}
@@ -403,13 +403,13 @@
 												{{$list->evaluation_connect}}
 											</div>
 											<div class="eval-imgs">
+											@foreach($evaluation_pic as $pic)
+												@if($pic->evaluation_id == $list->evaluation_id)
 												<div class="img-temp">
-													@foreach($evaluation_pic as $pic)
-														@if($pic->evaluation_id == $list->evaluation_id)
-														<img src="{{$pic->pic_path}}" data-src="{{$pic->pic_path}}" data-action="zoom" class="cover">
-														@endif
-													@endforeach
+													<img src="{{$pic->pic_path}}" data-src="{{$pic->pic_path}}" data-action="zoom" class="cover">
 												</div>
+												@endif
+											@endforeach
 											</div>
 											<div class="eval-time">
 												{{date("Y-m-d H:i:s",$list->evaluation_time)}}
@@ -441,13 +441,13 @@
 												{{$list->evaluation_connect}}
 											</div>
 											<div class="eval-imgs">
+												@foreach($evaluation_pic as $pic)
+												@if($pic->evaluation_id == $list->evaluation_id)
 												<div class="img-temp">
-													@foreach($evaluation_pic as $pic)
-														@if($pic->evaluation_id == $list->evaluation_id)
-														<img src="{{$pic->pic_path}}" data-src="{{$pic->pic_path}}" data-action="zoom" class="cover">
-														@endif
-													@endforeach
+													<img src="{{$pic->pic_path}}" data-src="{{$pic->pic_path}}" data-action="zoom" class="cover">
 												</div>
+												@endif
+												@endforeach
 											</div>
 											<div class="eval-time">
 												{{date("Y-m-d H:i:s",$list->evaluation_time)}}
@@ -648,7 +648,7 @@
 				location.reload();
 			}else if(res==3){
 				alert('您还未登录,请先登录!');
-				window.location.href='http://www.laravel.com/login/create';
+				window.location.href='/login/create';
 			}
 
 		});

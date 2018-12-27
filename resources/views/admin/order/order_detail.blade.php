@@ -29,12 +29,21 @@
 <title>建材列表</title>
 <link rel="stylesheet" href="/admin/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
 </head>
+      
       <div class="pull-right">
-        @foreach($order as $order_v)
+        @foreach($address as $order_v)
         <div class="user-content__box clearfix bgf">
           <div class="title">订单中心-订单{{$order_v->order_num}}</div>
           <div class="order-info__box">
-            <div class="order-addr">收货地址：<span class="c6">{{$order_v->address_id}}</span></div>
+            <div class="order-addr">收货地址：
+              <br/>
+              <b>收货人:</b> {{$order_v->consignee}} &nbsp;|&nbsp; <b>联系电话: </b>{{$order_v->phone}}
+              <br/>
+              <b>省份:</b> {{$order_v->province}} &nbsp;|&nbsp; <b>城市: </b>{{$order_v->city}}
+              <br/>
+              <b>详细地址:</b> {{$order_v->area}},{{$order_v->town}},{{$order_v->address}}
+              <hr/>
+            </div>
             <div class="order-info">
               订单信息
               <table>

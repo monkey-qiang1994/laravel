@@ -41,8 +41,22 @@
 							<div class="sale">{{$row->brand_name}}</div>
 						</div>
 						<div class="buttom">
-							<div>销量 <b>666</b></div>
-							<div>人气 <b>888</b></div>
+							<?php $k=0;?>
+							@foreach($sales as $sale)
+								@if($row->product_id == $sale->product_id)
+									<?php $k++;?>
+								@endif
+							@endforeach
+							<div>销量 <b>{{$k}}</b></div>
+
+							<?php $j=0;?>
+							@foreach($collection as $colle)
+								@if($row->product_id == $colle->product_id)
+									<?php $j++;?>
+								@endif
+							@endforeach
+							<div>人气 <b>{{$j}}</b></div>
+
 							<?php $i=0;?>
 							@foreach($evaluation as $eval)
 								@if($row->product_id == $eval->product_id)

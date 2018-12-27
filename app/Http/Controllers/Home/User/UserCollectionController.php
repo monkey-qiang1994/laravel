@@ -13,7 +13,7 @@ class UserCollectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //查询收藏商品的信息
         $data=DB::table('products')
@@ -22,11 +22,11 @@ class UserCollectionController extends Controller
         ->where('user_id','=',session('user_id'))
         ->select('products.product_name','products.price','products_images.product_img','shoucang.product_id')
         ->groupBy('products.product_id')
-        ->get();
+        ->paginate(8);
          //获取购物车中的数量
         $cart_num = $this->cart_num();
         // var_dump($data);
-        return view('home.user.user_collection',['data'=>$data,'cart_num'=>$cart_num]);
+        return view('home.user.user_collection',['data'=>$data,'cart_num'=>$cart_num,'request'=>$request->all()]);
     }
 
     /**

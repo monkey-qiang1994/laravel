@@ -20,12 +20,12 @@ class CartController extends Controller
         ->join('products','products.product_id','=','cart.product_id')
         ->join('products_images','products_images.product_id','=','products.product_id')
         ->groupBy('cart.product_att')
-        ->select('cart.*','products.product_name','products.price','products_images.product_img')
         ->get();
         
         foreach ($res as $key => $value) {
            $info = $value->product_id;
         }
+        
         if (!isset($info)) {
             $info = 'x';
         }

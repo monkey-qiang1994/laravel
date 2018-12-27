@@ -21,13 +21,13 @@
 					{{csrf_field()}}
 						<p class="fz18 cr">新增收货地址<span class="c6" style="margin-left: 20px">收货人姓名,收货地址,手机号码选填一项，其余均为必填项</span></p>
 						<div class="form-group">
-							<label for="name" class="col-sm-2 control-label">收货人姓名：</label>
+							<label for="name" class="col-sm-2 control-label">收货人姓名：<span class="required">*</span></label>
 							<div class="col-sm-6">
-								<input class="form-control" name="consignee" id="name" placeholder="请输入真实姓名" type="text">
+								<input class="form-control" name="consignee" id="name" placeholder="请输入真实姓名" type="text" required>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="details" class="col-sm-2 control-label">收货地址：</label>
+							<label for="details" class="col-sm-2 control-label">收货地址：<span class="required">*</span></label>
 							<div class="col-sm-10">
 								<div class="addr-linkage">
 									<select name="province"></select>
@@ -35,13 +35,13 @@
 									<select name="area"></select>
 									<select name="town"></select>
 								</div>
-								<input class="form-control" name="address" id="details" placeholder="建议您如实填写详细收货地址，例如街道名称，门牌号码等信息" maxlength="30" type="text">
+								<input class="form-control" name="address" id="details" placeholder="建议您如实填写详细收货地址，例如街道名称，门牌号码等信息" maxlength="30" type="text" required>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="mobile" class="col-sm-2 control-label">手机号码：</label>
+							<label for="mobile" class="col-sm-2 control-label">手机号码：<span class="required">*</span></label>
 							<div class="col-sm-6">
-								<input class="form-control" name="phone" id="mobile" placeholder="请输入手机号码" type="text">
+								<input class="form-control" name="phone" id="mobile" placeholder="请输入手机号码" type="text" required>
 							</div>
 						</div>
 						<div class="form-group">

@@ -22,7 +22,7 @@ class CouponController extends Controller
         ->select('coupon_make.*','coupon_send.user_id','coupon_send.coupon_status','coupon_send.send_id')
         ->orderby('send_id','ASC')
         ->get();
-        // dd($res); 
+
         return view('admin.coupon.coupon_list',['res'=>$res]);
     }
 

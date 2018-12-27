@@ -18,28 +18,29 @@ class Order_cartController extends Controller
     {
         //购物车->支付
         //一次性
-        // $input = $request->session()->all();
-        // $info = $input['order_id'];
-        // var_dump($info);
-        // var_dump($input);
+
         $info = $request->input('order_id');
-        // var_dump($info);
         //订单详情内的数据
         $detail = DB::table('order_detail')->where('order_id','=',$info)->select()->get();
         //订单表的数据
         $order = DB::table('order_list')->where('order_id','=',$info)->select()->get();
-        //查询地址表的数据
-
+        //当前用户的id
+        $user_id  =session('user_id');
         //根据当前登录用户的id查询用户的优惠卷
         $coupon = DB::table('coupon_send')
         ->join('coupon_make','coupon_make.coupon_id','=','coupon_send.coupon_id')
-        ->where([['user_id','=',1],['coupon_send.coupon_status','=','0']])
+        ->where([['user_id','=',$user_id],['coupon_send.coupon_status','=','0']])
         ->select('coupon_make.*','coupon_send.*')
+        ->get();
+        //根据当前的用户id 获取所有的地址信息
+        $user = DB::table('homeuser')
+        ->join('address','address.user_id','=','homeuser.user_id')
+        ->where('homeuser.user_id','=',$user_id)
         ->get();
 
         //获取购物车中的数量
         $cart_num = $this->cart_num();
-        return view('home.order.cart_pay',['detail'=>$detail,'order'=>$order,'coupon'=>$coupon,'cart_num'=>$cart_num]);
+        return view('home.order.cart_pay',['detail'=>$detail,'order'=>$order,'coupon'=>$coupon,'cart_num'=>$cart_num,'user'=>$user]); 
     }
 
     /**
@@ -63,7 +64,7 @@ class Order_cartController extends Controller
     {
         // var_dump($request->all());
         //当前用户
-        $user_id = 0;
+        $user_id = session('user_id');
         //订单id
         $order_id = $request->input('order_id');
         //支付时间
@@ -100,7 +101,7 @@ class Order_cartController extends Controller
         $arr['pay_at'] = $time;
         // var_dump($arr);
         
-        if (DB::table('order_list')->where('order_id','=',$order_id)->update($arr) && DB::table('coupon_send')->where([['coupon_id','=',$coupon_id],['user_id','=',$user_id]])) {
+        if (DB::table('order_list')->where('order_id','=',$order_id)->update($arr) && DB::table('coupon_send')->where([['coupon_id','=',$coupon_id],['user_id','=',$user_id]])->delete()) {
            return redirect('/user/alipay?order_id='.$order_id );
         }else{
            return redirect('/user/alipay?order_id='.$order_id );

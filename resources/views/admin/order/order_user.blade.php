@@ -22,26 +22,49 @@
 <title>用户查看</title>
 </head>
 <body>
+  @if(!$pic->isEmpty())
+  @foreach($pic as $pic_v)
+<div class="cl pd-20" style=" background-color:#5bacb6">
+  <img class="avatar size-XL l" src="{{$pic_v->pic}}">
+  <dl style="margin-left:80px; color:#fff">
+    <dt>
+      <span class="f-18">{{$pic_v->username}}</span>
+      <span class="pl-10 f-12"></span>
+    </dt>
+    <dd class="pt-10 f-12" style="margin-left:0">{{$pic_v->address}}</dd>
+  </dl>
+</div>
+@endforeach
+@else
+@foreach($user as $user_v)
 <div class="cl pd-20" style=" background-color:#5bacb6">
   <img class="avatar size-XL l" src="/admin/static/h-ui/images/ucnter/avatar-default.jpg">
   <dl style="margin-left:80px; color:#fff">
     <dt>
-      <span class="f-18">张三</span>
-      <span class="pl-10 f-12">余额：40</span>
+      <span class="f-18">{{$user_v->username}}</span>
+      <span class="pl-10 f-12"></span>
     </dt>
-    <dd class="pt-10 f-12" style="margin-left:0">这家伙很懒，什么也没有留下</dd>
+    <dd class="pt-10 f-12" style="margin-left:0">暂无地址</dd>
   </dl>
 </div>
+@endforeach 
+@endif
 <div class="pd-20">
+  @if(!$pic->isEmpty())
+  @foreach($pic as $pic_vv)
   <table class="table">
     <tbody>
       <tr>
         <th class="text-r" width="80">性别：</th>
+        @if($pic_vv->sex == 1)
         <td>男</td>
+        @else
+        <td>女</td>
+        @endif
       </tr>
       <tr>
         <th class="text-r">手机：</th>
-        <td>13000000000</td>
+        <td>{{$pic_vv->phone}}</td>
       </tr>
       <tr>
         <th class="text-r">邮箱：</th>
@@ -49,19 +72,45 @@
       </tr>
       <tr>
         <th class="text-r">地址：</th>
-        <td>北京市 海淀区</td>
+        <td>{{$pic_vv->address}}</td>
       </tr>
       <tr>
         <th class="text-r">注册时间：</th>
-        <td>2014.12.20</td>
+        <td>{{Date('Y-m-d H:i:s',$pic_vv->created_at)}}</td>
       </tr>
-      <tr>
-        <th class="text-r">积分：</th>
-        <td>330</td>
-      </tr>
+
     </tbody>
   </table>
+  @endforeach
+  @else
+  @foreach($user as $user_vv)
+  <table class="table">
+    <tbody>
+      <tr>
+        <th class="text-r" width="80">性别：</th>
+        <td>未定义</td>
+  
+      </tr>
+      <tr>
+        <th class="text-r">手机：</th>
+        <td>{{$user_vv->phone}}</td>
+      </tr>
+      <tr>
+        <th class="text-r">邮箱：</th>
+        <td>admin@mail.com</td>
+      </tr>
+      <tr>
+        <th class="text-r">注册时间：</th>
+        <td>{{Date('Y-m-d H:i:s',$user_vv->created_at)}}</td>
+      </tr>
+
+    </tbody>
+  </table>
+  @endforeach
+  @endif
+
 </div>
+
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="/admin/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="/admin/lib/layer/2.4/layer.js"></script>

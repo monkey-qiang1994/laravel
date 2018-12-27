@@ -50,7 +50,7 @@ class Product_listController extends Controller
         
         $status = array('无状态','爆款推荐','新品直达','畅销产品');
         //产品管理
-        return view('admin.product_list',['data'=>$data,'status'=>$status,'request'=>$request->all(),'total'=>$total,'evaluation'=>$evaluation]);
+        return view('admin.product_list',['data'=>$data,'status'=>$status,'request'=>$request->all(),'total'=>$total]);
 
     }
 

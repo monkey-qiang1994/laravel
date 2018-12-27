@@ -124,14 +124,14 @@ class CommentController extends Controller
             ->join('order_list','order_list.order_id','=','evaluation_product.order_id')
             ->where([['evaluation_product.product_id','=',$id],['evaluation_product.evaluation_grede','=',$keyword]])
             ->select('evaluation_product.*','order_list.pay_at','order_list.order_num','order_list.user_id')
-            ->paginate(2);
+            ->paginate(5);
         }else{
             $id = $request->input('id');
             $res = DB::table('evaluation_product')
             ->join('order_list','order_list.order_id','=','evaluation_product.order_id')
             ->where('evaluation_product.product_id','=',$id)
             ->select('evaluation_product.*','order_list.pay_at','order_list.order_num','order_list.user_id')
-            ->paginate(2);
+            ->paginate(5);
         }
 
         

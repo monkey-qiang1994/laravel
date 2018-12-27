@@ -52,12 +52,12 @@
       <tr class="text-c">
         <td><input type="checkbox" value="1" name=""></td>
         <td>{{$v->send_id}}</td>
-          <td><a href="javascript:;" onclick="member_show('张三','/adminx/order_user?id','10001','360','400')"><i class="avatar size-L radius"><img alt="" src="/admin/static/h-ui/images/ucnter/avatar-default-S.gif"></i></a>
+          <td><a href="javascript:;" onclick="member_show('张三','/adminx/order_user?id={{$v->user_id}}','10001','360','400')"><i class="avatar size-L radius"><img alt="" src="/admin/static/h-ui/images/ucnter/avatar-default-S.gif"></i></a>
             
         </td>
         <td>{{$v->coupon_caption}}</td>
         <td>{{$v->coupon_down}}</td>
-        <td>1{{$v->coupon_price}}</td>
+        <td>{{$v->coupon_price}}</td>
         <td>{{Date('Y-m-d H:i:s',$v->coupon_time)}}</td>
         @if($v->coupon_status == 0)
         <td class="td-status"><span class="label label-success radius">未使用</span></td>

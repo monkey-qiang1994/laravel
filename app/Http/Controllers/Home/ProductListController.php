@@ -87,12 +87,18 @@ class ProductListController extends Controller
         //获取商品评价
         $evaluation = DB::table('evaluation_product')->get();
 
+        //获取商品被收藏数,用于显示该商品的人气
+        $collection = DB::table('shoucang')->get();
+
+        //获取订单详情中的产品ID,用于显示该商品的销量
+        $sales = DB::table('order_detail')->select('product_id')->get();
+
         //获取购物车中的数量
         $cart_num = $this->cart_num();
 
 
         //加载商品列表页面
-        return view("home.product_list",['result'=>$result,'request'=>$request->all(),'cart_num'=>$cart_num,'recommend'=>$recommend,'evaluation'=>$evaluation]);
+        return view("home.product_list",['result'=>$result,'request'=>$request->all(),'cart_num'=>$cart_num,'recommend'=>$recommend,'evaluation'=>$evaluation,'collection'=>$collection,'sales'=>$sales]);
     }
 
     /**

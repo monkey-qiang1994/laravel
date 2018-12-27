@@ -24,14 +24,11 @@
 					@endforeach	
 					</div>
 					
-					<div class="page text-right clearfix">
-						<a class="disabled">上一页</a>
-						<a class="select">1</a>
-						<a href="">2</a>
-						<a href="">3</a>
-						<a class="" href="">下一页</a>
-						<a class="disabled">1/3页</a>
-					</div>
+					<!-- 分页 -->
+				<div class="page">
+					{{$data->appends($request)->render()}}
+				</div>
+				
 				</div>
 			</div>
 		</section>

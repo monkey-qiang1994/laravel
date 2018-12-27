@@ -57,7 +57,7 @@
 				@foreach($res as $res_v)
 				<tr class="text-c">
 					<td><input type="checkbox" value="1" name=""></td>
-		         	<td><a href="javascript:;" onclick="member_show('张三','/adminx/comment_user?{{$res_v->user_id}}','10001','360','400')"><i class="avatar size-L radius"><img alt="" src="/admin/static/h-ui/images/ucnter/avatar-default-S.gif"></i></a></td>
+		         	<td><a href="javascript:;" onclick="member_show('张三','/adminx/order_user?id={{$res_v->user_id}}','10001','360','400')"><i class="avatar size-L radius"><img alt="" src="/admin/static/h-ui/images/ucnter/avatar-default-S.gif"></i></a></td>
 		         	<td>{{$res_v->order_num}}</td>
 		         	<td>
 		         		@if($res_v->evaluation_grede == 0)
@@ -92,7 +92,12 @@
 		</div>
 	</div>
 </div>
-
+<script type="text/javascript">
+  /*用户-查看*/
+function member_show(title,url,id,w,h){
+  layer_show(title,url,w,h);
+}
+</script>
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="/admin/lib/jquery/1.9.1/jquery.min.js"></script> 
 <script type="text/javascript" src="/admin/lib/layer/2.4/layer.js"></script>  

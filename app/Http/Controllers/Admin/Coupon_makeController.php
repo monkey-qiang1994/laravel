@@ -9,7 +9,7 @@ use App\AdminModel\Coupon_send;
 use DB;
 
 class Coupon_makeController extends Controller
-{
+{ 
     /**
      * Display a listing of the resource.
      *
@@ -135,8 +135,11 @@ class Coupon_makeController extends Controller
         // echo $id;
         //根据id查询到优惠券详情
         $res = Coupon::where('coupon_id','=',$id)->select()->get();
+        //查询所有的用户
+        $user = DB::table('homeuser')->get();
+        // dd($user);
         // dd($res);
-        return view('admin.coupon.coupon_send',['res'=>$res]);
+        return view('admin.coupon.coupon_send',['res'=>$res,'user'=>$user]);
 
     }
 
@@ -149,17 +152,20 @@ class Coupon_makeController extends Controller
         if ($request->input('coupon_status') == 'all') {
             //所有用户发送,查出数据表中的所有用户的id,执行添加sql语句
             //假装是所有用户
-            $arr = array('1','2','3','4','5');
+            // $arr = array('1','2','3','4','5');
+            $user = DB::table('homeuser')->get();
             //计算所有用户个数
-            $count = count($arr);
+            $count = count($user);
             //初始值
             $num = 0;
-            //便利所有用户的id
-            foreach ($arr as $v) {
+            //用户执行添加
+            foreach ($user as $key => $value) {
                 //模型执行添加
-                Coupon_send::create(['user_id'=>$v,'coupon_id'=>$id]);
+                Coupon_send::create(['user_id'=>$value->user_id,'coupon_id'=>$id]);
                 $num++;
             }
+
+
             //判断当所有的sql语句执行完毕后
             if ($num == $count) {
                 return redirect('/adminx/coupon')->with('success','发送成功');

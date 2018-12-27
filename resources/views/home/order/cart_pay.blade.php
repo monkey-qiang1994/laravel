@@ -8,20 +8,18 @@
 				<div class="shop-title">收货地址</div>
 				<form action="/user/order_cart" method="post" class="shopcart-form__box">
 					{{csrf_field()}}
+					@foreach($user as $user_v)
 					<div class="addr-radio">
-						<div class="radio-line radio-box active">
-							<label class="radio-label ep" title="福建省 福州市 鼓楼区 温泉街道 五四路159号世界金龙大厦20层B北 福州rpg.blue网络 （喵喵喵 收） 153****9999">
-								<input name="address_id" checked="" value="0" autocomplete="off" type="radio"><i class="iconfont icon-radio"></i>
-								福建省 福州市 鼓楼区 温泉街道
-								五四路159号世界金龙大厦20层B北 福州rpg.blue网络
-								（喵喵喵 收） 153****9999
+						<div class="radio-line radio-box active" style="border:0px">
+							<label class="radio-label ep" title="{{$user_v->province}}{{$user_v->city}}{{$user_v->area}}{{$user_v->town}}{{$user_v->address}} （{{$user_v->consignee}} 收） {{$user_v->phone}}">
+								<input name="address_id" checked="" value="{{$user_v->add_id}}" autocomplete="off" type="radio"><i class="iconfont icon-radio"></i>
+								{{$user_v->province}}{{$user_v->city}}{{$user_v->area}}{{$user_v->town}}{{$user_v->address}} （{{$user_v->consignee}} 收） {{$user_v->phone}}
 							</label>
-							<a href="javascript:;" class="default">默认地址</a>
-							<a href="udai_address_edit.html" class="edit">修改</a>
-						</div>
 
+						</div>
 					</div>
-					<div class="add_addr"><a href="udai_address.html">添加新地址</a></div>
+					@endforeach
+					<div class="add_addr"><a href="/user/address">添加新地址</a></div>
 					<div class="shop-order__detail">
 						<table class="table">
 							<thead>
@@ -116,6 +114,7 @@
 									//优惠间下
 									var coupon_down = res[0]['coupon_down'];
 									//优惠券价格
+								
 									var coupon_price = res[0]['coupon_price'];
 									if (coupon_down > total) {
 										alert('不满足优惠券使用规则');

@@ -32,10 +32,10 @@
 						<div class="order-panel">
 							<ul class="nav user-nav__title" role="tablist">
 								<li role="presentation" class="nav-item active"><a href="#all" aria-controls="all" role="tab" data-toggle="tab">所有订单</a></li>
-								<li role="presentation" class="nav-item "><a href="#pay" aria-controls="pay" role="tab" data-toggle="tab">待付款 <span class="cr">0</span></a></li>
-								<li role="presentation" class="nav-item "><a href="#emit" aria-controls="emit" role="tab" data-toggle="tab">待发货 <span class="cr">0</span></a></li>
-								<li role="presentation" class="nav-item "><a href="#take" aria-controls="take" role="tab" data-toggle="tab">待收货 <span class="cr">0</span></a></li>
-								<li role="presentation" class="nav-item "><a href="#eval" aria-controls="eval" role="tab" data-toggle="tab">待评价 <span class="cr">0</span></a></li>
+								<li role="presentation" class="nav-item "><a href="#pay" aria-controls="pay" role="tab" data-toggle="tab">待付款 <span class="cr">{{count($payment)}}</span></a></li>
+								<li role="presentation" class="nav-item "><a href="#emit" aria-controls="emit" role="tab" data-toggle="tab">待发货 <span class="cr">{{count($wait_shipped)}}</span></a></li>
+								<li role="presentation" class="nav-item "><a href="#take" aria-controls="take" role="tab" data-toggle="tab">待收货 <span class="cr">{{count($receiving)}}</span></a></li>
+								<li role="presentation" class="nav-item "><a href="#eval" aria-controls="eval" role="tab" data-toggle="tab">待评价 <span class="cr">{{count($evaluate)}}</span></a></li>
 							</ul>
 
 							<div class="tab-content">
@@ -55,12 +55,12 @@
 										<tr class="order-item">
 											<td>
 												<label>
-													<a href="udai_order_detail.html" class="num">
+													<a href="#" class="num">
 														{{Date('Y-m-d',$all_v->created_at)}} 订单号: {{$all_v->order_num}}
 													</a>
 													<div class="card">
 													
-														<div class="name ep2">地址</div>
+														<div class="name ep2">地址: {{$all_v->province}} {{$all_v->city}} {{$all_v->area}} {{$all_v->town}}</div>
 														<div class="format">订单支付时间:{{Date('Y-m-d',$all_v->pay_at)}}</div>
 														
 													</div>
@@ -108,24 +108,24 @@
 											<td class="order">
 												<div class="del"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></div>
 												@if($all_v->order_status == 0)
-												<a href="" class="but but-primary">
+												<a href="/user/alipay?order_id={{$all_v->order_id}}" class="but but-primary">
 													立即付款</a>
-												<a href="" class="but c3">取消订单</a>
+												<a href="/user/cancel_order?order_id={{$all_v->order_id}}" class="but c3">取消订单</a>
 												@endif
 												@if($all_v->order_status == 1)
 												<a href="" class="but but-primary">
 													待发货</a>
-												<a href="" class="but c3">取消订单</a>
+												<a href="/user/cancel_order?order_id={{$all_v->order_id}}" class="but c3">取消订单</a>
 
 												@endif
 												@if($all_v->order_status == 2)
-												<a href="" class="but but-primary">
+												<a href="/user/receipt?order_id={{$all_v->order_id}}" class="but but-primary">
 													确认收货</a>
-												<a href="" class="but c3">退款/退货</a>
+												
 
 												@endif
 												@if($all_v->order_status == 3)
-												<a href="/user/order_evaluation?id={{$all_v->order_id}}" class="but but-primary">
+												<a href="/user/order_detail?order_id={{$all_v->order_id}}" class="but but-primary">
 													评价</a>
 
 												@endif
@@ -134,26 +134,28 @@
 													已完成</a>
 
 												@endif
-												<!-- <a href="" class="but but-link">评价</a> -->
+												@if($all_v->order_status == -1)
+												<a href="javascript:void(0)" class="but but-primary">
+													已取消</a>
+
+												@endif
 												
 											</td>
 										</tr>
 										@endforeach
 										@else
 										<tr class="order-empty"><td colspan='6'>
-											<div class="empty-msg">最近没有任何订单，家里好像缺了点什么！<br><a href="item_category.html">要不瞧瞧去？</a></div>
+											<div class="empty-msg">最近没有任何订单，家里好像缺了点什么！<br><a href="/index.php">要不瞧瞧去？</a></div>
 										</td></tr>
 										@endif
 									</table>
-									<div class="page text-right clearfix" style="margin-top: 40px">
-										<a class="disabled">上一页</a>
-										<a class="select">1</a>
-										<a href="">2</a>
-										<a href="">3</a>
-										<a class="" href="">下一页</a>
+									<!-- 分页 -->
+									<div class="page">
+										{{$all->appends($request)->render()}}
 									</div>
 								</div>
 								<!-- 所有订单end -->
+
 								<!-- 代付款订单start -->
 								<div role="tabpanel" class="tab-pane fade" id="pay">
 									<table class="table text-center">
@@ -165,97 +167,87 @@
 											<th width="120">交易状态</th>
 											<th width="120">交易操作</th>
 										</tr>
-										@foreach($all as $all_v)
-										@if(!$all->isEmpty() && $all_v->order_status ==0)
-										<tr class="order-item">
-											<td>
-												<label>
-													<a href="udai_order_detail.html" class="num">
-														{{Date('Y-m-d',$all_v->created_at)}} 订单号: {{$all_v->order_num}}
-													</a>
-													<div class="card">
-													
-														<div class="name ep2">地址</div>
-														<div class="format">订单支付时间:{{Date('Y-m-d',$all_v->pay_at)}}</div>
+										@foreach($payment as $all_v)
+											<tr class="order-item">
+												<td>
+													<label>
+														<a href="#" class="num">
+															{{Date('Y-m-d',$all_v->created_at)}} 订单号: {{$all_v->order_num}}
+														</a>
+														<div class="card">
 														
-													</div>
-												</label>
-											</td>
-											<td>{{$all_v->num}}</td>
-											<td>￥{{$all_v->total}}</td>
-											<td>￥@if(!empty($all_v->payable)){{$all_v->payable}}
-												@else
-												{{$all_v->total}}
+															<div class="name ep2">地址: {{$all_v->province}} {{$all_v->city}} {{$all_v->area}} {{$all_v->town}}</div>
+															<div class="format">订单支付时间:{{Date('Y-m-d',$all_v->pay_at)}}</div>
+															
+														</div>
+													</label>
+												</td>
+												<td>{{$all_v->num}}</td>
+												<td>￥{{$all_v->total}}</td>
+												<td>￥@if(!empty($all_v->payable)){{$all_v->payable}}
+													@else
+													{{$all_v->total}}
+													@endif
+													<br><span class="fz12 c6 text-nowrap">
+												@if($all_v->coupon_id != 0)
+													@foreach($coupon as $coupon_v)
+														@if($coupon_v->coupon_id == $all_v->coupon_id)
+														(优惠券抵扣: ¥{{$coupon_v->coupon_price}})
+														@endif
+													@endforeach
 												@endif
-												<br><span class="fz12 c6 text-nowrap">
-											@if($all_v->coupon_id != 0)
-											@foreach($coupon as $coupon_v)
-											@if($coupon_v->coupon_id == $all_v->coupon_id)
-											(优惠券抵扣: ¥{{$coupon_v->coupon_price}})
-											@endif
-											@endforeach
-											@endif
-											</span></td>
-											@if($all_v->order_status == 0)
-											<td class="state">
-												<a href="/user/alipay?order_id={{$all_v->order_id}}" class="but c6">等待付款</a>
-												<a href="/user/order_detail?order_id={{$all_v->order_id}}"  class="but c9">订单详情</a>
-											</td>
-											@endif
-											@if($all_v->order_status == 1 || $all_v->order_status == 2 )
-											<td class="state">
-												<a class="but c6">已付款</a>
-												<a href="/user/order_detail?order_id={{$all_v->order_id}}" class="but c9">订单详情</a>
-											</td>
-											@endif
-											<td class="order">
-												<div class="del"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></div>
+												</span></td>
 												@if($all_v->order_status == 0)
-												<a href="" class="but but-primary">
-													立即付款</a>
-												<a href="" class="but c3">取消订单</a>
+												<td class="state">
+													<a href="/user/alipay?order_id={{$all_v->order_id}}" class="but c6">等待付款</a>
+													<a href="/user/order_detail?order_id={{$all_v->order_id}}"  class="but c9">订单详情</a>
+												</td>
 												@endif
-												@if($all_v->order_status == 1)
-												<a href="" class="but but-primary">
-													待发货</a>
-												<a href="" class="but c3">取消订单</a>
-
+												@if($all_v->order_status == 1 || $all_v->order_status == 2 )
+												<td class="state">
+													<a class="but c6">已付款</a>
+													<a href="/user/order_detail?order_id={{$all_v->order_id}}" class="but c9">订单详情</a>
+												</td>
 												@endif
-												@if($all_v->order_status == 2)
-												<a href="" class="but but-primary">
-													确认收货</a>
-												<a href="" class="but c3">退款/退货</a>
+												<td class="order">
+													<div class="del"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></div>
+													@if($all_v->order_status == 0)
+													<a href="/user/alipay?order_id={{$all_v->order_id}}" class="but but-primary">
+														立即付款</a>
+													<a href="/user/cancel_order?order_id={{$all_v->order_id}}" class="but c3">取消订单</a>
+													@endif
+													@if($all_v->order_status == 1)
+													<a href="" class="but but-primary">
+														待发货</a>
+													<a href="/user/cancel_order?order_id={{$all_v->order_id}}" class="but c3">取消订单</a>
 
-												@endif
-												@if($all_v->order_status == 3)
-												<a href="/user/order_evaluation?id={{$all_v->order_id}}" class="but but-primary">
-													评价</a>
+													@endif
+													@if($all_v->order_status == 2)
+													<a href="/user/receipt?order_id={{$all_v->order_id}}" class="but but-primary">
+														确认收货</a>
+													@endif
 
-												@endif
-												<!-- <a href="" class="but but-link">评价</a> -->
-												
-											</td>
-										</tr>
-
-										@endif
-
+													@if($all_v->order_status == 3)
+													<a href="/user/order_detail?order_id={{$all_v->order_id}}" class="but but-primary">
+														评价</a>
+													@endif
+												</td>
+											</tr>
 										@endforeach
 							
-										@if(!$all->isEmpty() && empty($all_v->order_status == 0))
+										@if($payment->isEmpty())
 										<tr class="order-empty"><td colspan='6'>
-											<div class="empty-msg">最近没有任何订单，家里好像缺了点什么！<br><a href="item_category.html">要不瞧瞧去？</a></div>
+											<div class="empty-msg">最近没有任何订单，家里好像缺了点什么！<br><a href="/index.php">要不瞧瞧去？</a></div>
 										</td></tr>
 										@endif	
 									</table>
-									<div class="page text-right clearfix" style="margin-top: 40px">
-										<a class="disabled">上一页</a>
-										<a class="select">1</a>
-										<a href="">2</a>
-										<a href="">3</a>
-										<a class="" href="">下一页</a>
+									<!-- 分页 -->
+									<div class="page">
+										{{$payment->appends($request)->render()}}
 									</div>
 								</div>
 								<!-- 待付款订单end -->
+
 								<!-- 代发货订单start -->
 								<div role="tabpanel" class="tab-pane fade" id="emit">
 									<table class="table text-center">
@@ -267,17 +259,16 @@
 											<th width="120">交易状态</th>
 											<th width="120">交易操作</th>
 										</tr>
-										@foreach($all as $all_v)
-										@if(!empty($all_v) && $all_v->order_status ==1)
+										@foreach($wait_shipped as $all_v)
 										<tr class="order-item">
 											<td>
 												<label>
-													<a href="udai_order_detail.html" class="num">
+													<a href="#" class="num">
 														{{Date('Y-m-d',$all_v->created_at)}} 订单号: {{$all_v->order_num}}
 													</a>
 													<div class="card">
 													
-														<div class="name ep2">地址</div>
+														<div class="name ep2">地址: {{$all_v->province}} {{$all_v->city}} {{$all_v->area}} {{$all_v->town}}</div>
 														<div class="format">订单支付时间:{{Date('Y-m-d',$all_v->pay_at)}}</div>
 														
 													</div>
@@ -313,51 +304,46 @@
 											<td class="order">
 												<div class="del"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></div>
 												@if($all_v->order_status == 0)
-												<a href="" class="but but-primary">
+												<a href="/user/alipay?order_id={{$all_v->order_id}}" class="but but-primary">
 													立即付款</a>
-												<a href="" class="but c3">取消订单</a>
+												<a href="/user/cancel_order?order_id={{$all_v->order_id}}" class="but c3">取消订单</a>
 												@endif
 												@if($all_v->order_status == 1)
 												<a href="" class="but but-primary">
 													待发货</a>
-												<a href="" class="but c3">取消订单</a>
+												<a href="/user/cancel_order?order_id={{$all_v->order_id}}" class="but c3">取消订单</a>
 
 												@endif
 												@if($all_v->order_status == 2)
-												<a href="" class="but but-primary">
+												<a href="/user/receipt?order_id={{$all_v->order_id}}" class="but but-primary">
 													确认收货</a>
-												<a href="" class="but c3">退款/退货</a>
+												
 
 												@endif
 												@if($all_v->order_status == 3)
-												<a href="/user/order_evaluation?id={{$all_v->order_id}}" class="but but-primary">
+												<a href="/user/order_detail?order_id={{$all_v->order_id}}" class="but but-primary">
 													评价</a>
 
 												@endif
-												<!-- <a href="" class="but but-link">评价</a> -->
 												
 											</td>
 										</tr>
-										@endif
-
 										@endforeach
 								
 
-										@if( !$all->isEmpty() && empty($all_v->order_status == 1))
+										@if($wait_shipped->isEmpty())
 										<tr class="order-empty"><td colspan='6'>
-											<div class="empty-msg">最近没有任何订单，家里好像缺了点什么！<br><a href="item_category.html">要不瞧瞧去？</a></div>
+											<div class="empty-msg">最近没有任何订单，家里好像缺了点什么！<br><a href="/index.php">要不瞧瞧去？</a></div>
 										</td></tr>
 										@endif
 									</table>
-									<div class="page text-right clearfix" style="margin-top: 40px">
-										<a class="disabled">上一页</a>
-										<a class="select">1</a>
-										<a href="">2</a>
-										<a href="">3</a>
-										<a class="" href="">下一页</a>
+									<!-- 分页 -->
+									<div class="page">
+										{{$wait_shipped->appends($request)->render()}}
 									</div>
 								</div>
 								<!-- 待付款发货end -->
+
 								<!-- 待收货start -->
 								<div role="tabpanel" class="tab-pane fade" id="take">
 									<table class="table text-center">
@@ -369,17 +355,16 @@
 											<th width="120">交易状态</th>
 											<th width="120">交易操作</th>
 										</tr>
-										@foreach($all as $all_v)
-										@if(!empty($all_v) && $all_v->order_status ==2)
+										@foreach($receiving as $all_v)
 										<tr class="order-item">
 											<td>
 												<label>
-													<a href="udai_order_detail.html" class="num">
+													<a href="#" class="num">
 														{{Date('Y-m-d',$all_v->created_at)}} 订单号: {{$all_v->order_num}}
 													</a>
 													<div class="card">
 													
-														<div class="name ep2">地址</div>
+														<div class="name ep2">地址: {{$all_v->province}} {{$all_v->city}} {{$all_v->area}} {{$all_v->town}}</div>
 														<div class="format">订单支付时间:{{Date('Y-m-d',$all_v->pay_at)}}</div>
 														
 													</div>
@@ -415,49 +400,45 @@
 											<td class="order">
 												<div class="del"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></div>
 												@if($all_v->order_status == 0)
-												<a href="" class="but but-primary">
+												<a href="/user/alipay?order_id={{$all_v->order_id}}" class="but but-primary">
 													立即付款</a>
-												<a href="" class="but c3">取消订单</a>
+												<a href="/user/cancel_order?order_id={{$all_v->order_id}}" class="but c3">取消订单</a>
 												@endif
 												@if($all_v->order_status == 1)
 												<a href="" class="but but-primary">
 													待发货</a>
-												<a href="" class="but c3">取消订单</a>
+												<a href="/user/cancel_order?order_id={{$all_v->order_id}}" class="but c3">取消订单</a>
 
 												@endif
 												@if($all_v->order_status == 2)
-												<a href="" class="but but-primary">
+												<a href="/user/receipt?order_id={{$all_v->order_id}}" class="but but-primary">
 													确认收货</a>
-												<a href="" class="but c3">退款/退货</a>
+												
 
 												@endif
 												@if($all_v->order_status == 3)
-												<a href="/user/order_evaluation?id={{$all_v->order_id}}" class="but but-primary">
+												<a href="/user/order_detail?order_id={{$all_v->order_id}}" class="but but-primary">
 													评价</a>
 
 												@endif
-												<!-- <a href="" class="but but-link">评价</a> -->
+
 												
 											</td>
 										</tr>
-										@endif
-
 										@endforeach
-										@if(!$all->isEmpty() && empty($all_v->order_status == 2))
+										@if($receiving->isEmpty())
 										<tr class="order-empty"><td colspan='6'>
-											<div class="empty-msg">最近没有任何订单，家里好像缺了点什么！<br><a href="item_category.html">要不瞧瞧去？</a></div>
+											<div class="empty-msg">最近没有任何订单，家里好像缺了点什么！<br><a href="/index.php">要不瞧瞧去？</a></div>
 										</td></tr>
 										@endif
 									</table>
-									<div class="page text-right clearfix" style="margin-top: 40px">
-										<a class="disabled">上一页</a>
-										<a class="select">1</a>
-										<a href="">2</a>
-										<a href="">3</a>
-										<a class="" href="">下一页</a>
+									<!-- 分页 -->
+									<div class="page">
+										{{$receiving->appends($request)->render()}}
 									</div>
 								</div>
 								<!-- 待收货end -->
+
 								<!-- 待评价start -->
 								<div role="tabpanel" class="tab-pane fade" id="eval">
 									<table class="table text-center">
@@ -469,17 +450,16 @@
 											<th width="120">交易状态</th>
 											<th width="120">交易操作</th>
 										</tr>
-										@foreach($all as $all_v)
-										@if(!empty($all_v) && $all_v->order_status ==3)
+										@foreach($evaluate as $all_v)
 										<tr class="order-item">
 											<td>
 												<label>
-													<a href="udai_order_detail.html" class="num">
+													<a href="#" class="num">
 														{{Date('Y-m-d',$all_v->created_at)}} 订单号: {{$all_v->order_num}}
 													</a>
 													<div class="card">
 													
-														<div class="name ep2">地址</div>
+														<div class="name ep2">地址: {{$all_v->province}} {{$all_v->city}} {{$all_v->area}} {{$all_v->town}}</div>
 														<div class="format">订单支付时间:{{Date('Y-m-d',$all_v->pay_at)}}</div>
 														
 													</div>
@@ -521,51 +501,44 @@
 											<td class="order">
 												<div class="del"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></div>
 												@if($all_v->order_status == 0)
-												<a href="" class="but but-primary">
+												<a href="/user/alipay?order_id={{$all_v->order_id}}" class="but but-primary">
 													立即付款</a>
-												<a href="" class="but c3">取消订单</a>
+												<a href="/user/cancel_order?order_id={{$all_v->order_id}}" class="but c3">取消订单</a>
 												@endif
 												@if($all_v->order_status == 1)
 												<a href="" class="but but-primary">
 													待发货</a>
-												<a href="" class="but c3">取消订单</a>
+												<a href="/user/cancel_order?order_id={{$all_v->order_id}}" class="but c3">取消订单</a>
 
 												@endif
 												@if($all_v->order_status == 2)
-												<a href="" class="but but-primary">
+												<a href="/user/receipt?order_id={{$all_v->order_id}}" class="but but-primary">
 													确认收货</a>
-												<a href="" class="but c3">退款/退货</a>
+												
 
 												@endif
 												@if($all_v->order_status == 3)
-												<a href="/user/order_evaluation?id={{$all_v->order_id}}" class="but but-primary">
+												<a href="/user/order_detail?order_id={{$all_v->order_id}}" class="but but-primary">
 													评价</a>
 
 												@endif
 												@if($all_v->order_status == 4)
 												<a href="/user/order_evaluation?id={{$all_v->order_id}}" class="but but-primary">
 													已完成</a>
-
 												@endif
-												<!-- <a href="" class="but but-link">评价</a> -->
 												
 											</td>
 										</tr>
-										@endif
-
 										@endforeach
-										@if( !$all->isEmpty() && empty($all_v->order_status == 3))
+										@if($evaluate->isEmpty())
 										<tr class="order-empty"><td colspan='6'>
-											<div class="empty-msg">最近没有任何订单，家里好像缺了点什么！<br><a href="item_category.html">要不瞧瞧去？</a></div>
+											<div class="empty-msg">最近没有任何订单，家里好像缺了点什么！<br><a href="/index.php">要不瞧瞧去？</a></div>
 										</td></tr>
 										@endif
 									</table>
-									<div class="page text-right clearfix" style="margin-top: 40px">
-										<a class="disabled">上一页</a>
-										<a class="select">1</a>
-										<a href="">2</a>
-										<a href="">3</a>
-										<a class="" href="">下一页</a>
+									<!-- 分页 -->
+									<div class="page">
+										{{$evaluate->appends($request)->render()}}
 									</div>
 								</div>
 								<!-- 待评价end -->
@@ -578,9 +551,15 @@
 		</section>
    		@if(Session::has('success'))
 		<div id="addBox" class="savetips success"  >{{Session::get('success')}}</div>
+		<script type="text/javascript">
+			$('#addBox').show().delay(1500).fadeOut();
+		</script>
 		@endif
    		@if(Session::has('error'))
 		<div id="addBox" class="savetips success"  >{{Session::get('error')}}</div>
+		<script type="text/javascript">
+			$('#addBox').show().delay(1500).fadeOut();
+		</script>
 		@endif
 	</div>
 	<script type="text/javascript" src="/admin/lib/jquery/1.9.1/jquery.min.js"></script> 

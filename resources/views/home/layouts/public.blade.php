@@ -22,7 +22,11 @@
 	<script src="/home/js/menu/jquery-latest.min.js" charset="UTF-8"></script>
 	<script src="/home/js/menu/script.js" charset="UTF-8"></script>
 	-->
-	
+	<style>
+		.required{
+			color: red;
+		}
+	</style>
 	<title>@yield('title')</title>
 </head>
 <body>

@@ -1,5 +1,5 @@
 <?php
-
+ 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -100,7 +100,13 @@ Route::group(['prefix' => 'user','middleware'=>'login'],function(){
 	Route::get('/order_evaluation','Home\My_orderController@order_evaluation');
 	//w 处理订单评价
 	Route::post('/process_evaluation','Home\My_orderController@process_evaluation');
+
 	Route::get('/cart_del','Home\Order_payController@cart_del');
+
+	//取消订单
+	Route::get('/cancel_order','Home\My_orderController@cancel_order');
+	//确认收货
+	Route::get('/receipt','Home\My_orderController@receipt');
 });
 
 
@@ -137,7 +143,7 @@ Route::group(['prefix'=>'adminx','middleware'=>'adminlogin'],function(){
 	Route::resource('/comment','Admin\CommentController');
 	//意见反馈
 	Route::resource('/feedback_list','Admin\Feedback_listController');
-	//会员列表
+	//会员列表 
 	Route::resource('/member_list','Admin\Member_listController');
 	//删除的会员
 	Route::resource('/member_del','Admin\Member_delController');
@@ -194,5 +200,7 @@ Route::group(['prefix'=>'adminx','middleware'=>'adminlogin'],function(){
 	Route::resource('/comment','Admin\CommentController');
 	//w 评论详情
 	Route::get('/evaluation','Admin\CommentController@evaluation');
+	//w 发货
+	Route::get('order_send','Admin\Order_listController@order_send');
 
 });

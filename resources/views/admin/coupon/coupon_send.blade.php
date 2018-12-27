@@ -87,18 +87,12 @@
       <div class="formControls col-xs-8 col-sm-9">
         <!-- 选择部分用户 -->
       <div class="skin-minimal">
+        @foreach($user as $user_id)
         <div class="check-box " >
-          <input type="checkbox"  name="coupon_status1" value="1" >
-          <label for="checkbox-1">用户名</label>
+          <input type="checkbox"  name="coupon_status1" value="{{$user_id->user_id}}" >
+          <label for="checkbox-1">手机号为:{{$user_id->phone}}的用户"{{$user_id->username}}"</label>
         </div>
-        <div class="check-box " >
-          <input type="checkbox"  name="coupon_status2" value="2" >
-          <label for="checkbox-1">用户名</label>
-        </div>
-        <div class="check-box " >
-          <input type="checkbox"  name="coupon_status3" value="3" >
-          <label for="checkbox-1">用户名</label>
-        </div>
+        @endforeach
       </div>
       <!-- 选择部分用户 -->
     </div>

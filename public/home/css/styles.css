@@ -1814,7 +1814,7 @@ img.zoom-img {
 	border-left: 1px solid #d0d0d0;
 }
 .user-nav__but {
-	width: 90px;
+	width: 150px;
 	font-size: 12px;
 	text-align: center;
 	text-decoration: none !important;
@@ -1910,7 +1910,8 @@ img.zoom-img {
 	font-size: 12px;
 	line-height: 1em;
 	position: absolute;
-	bottom: 16px;left: 90px;
+	bottom: 16px;
+	left: 10px;
 }
 .order-item .card .favour {
 	bottom: 0;

@@ -39,12 +39,23 @@ class Order_payController extends Controller
     {
         //去除token字串
         $input = $request->except('_token','product_id');
-        //当未提交为空的时候,阻止表单提交
+
+        //获取当前会员是否有地址信息
+        $add = DB::table('address')
+        ->where('user_id','=',session('user_id'))
+        ->get();
+
+        //如果没有地址就跳转到添加地址页面
+        if($add->isEmpty()){
+            echo "<script>alert('您还没有地址,请先添加收货地址!');window.location.href='/user/address'</script>";exit;
+        }
+
+        //当未勾选产品提交时,阻止表单提交
         if (empty($input)) {
             return back()->with("error",'请选择商品');
-
         }
-        // dd($input);
+
+ 
         $total = 0;
         $num = 0;
         foreach ($input['id'] as $v) {
@@ -53,21 +64,26 @@ class Order_payController extends Controller
             ->join('products','products.product_id','=','cart.product_id')
             ->join('products_images','products.product_id','=','products_images.product_id')
             ->where('id','=',$v)
-            ->select('cart.*','products.product_name','products.price','products_images.product_img')
             ->get();
-            // var_dump($info);
             //要添加进用户详情的数据
             $arr[] = $info[0]->id;
             $res[$v]['product_id'] = $info[0]->product_id;
             $res[$v]['product_num'] =$info[0]->product_num;
             $res[$v]['product_attr'] = $info[0]->product_att;
-            $res[$v]['product_price'] = $info[0]->price;
+            //判断有没有折扣
+            if (isset($info[0]->discount_price)) {
+                $res[$v]['product_price'] = $info[0]->discount_price;
+                $total += $info[0]->product_num*$info[0]->discount_price;
+            }else{
+                $res[$v]['product_price'] = $info[0]->price;
+                $total += $info[0]->product_num*$info[0]->price;
+            }
             $res[$v]['product_name'] = $info[0]->product_name;
             $res[$v]['product_img'] = $info[0]->product_img;
-            $total += $info[0]->product_num*$info[0]->price;
+            $res[$v]['evaluation_status'] = 0;
             $num += $info[0]->product_num;
         }        
-        // var_dump($arr);
+        
         //创建订单,默认没地址
         //生成订单号 
         $order['order_num'] = 'U'.mt_rand(100,999).time();
@@ -99,7 +115,7 @@ class Order_payController extends Controller
                 DB::table('order_detail')->insert($value);
 
             }
-            //每删除一条数据 arr_length加1 
+            //每删除一条数据 arr_length加1  
             foreach ($arr as $row) {
                 DB::table('cart')->where('id','=',$row)->delete();
                 $arr_length++;
@@ -180,7 +196,7 @@ class Order_payController extends Controller
     public function cart_del(Request $request)
     {
         //用户id
-        $user_id = 0;
+        $user_id = session('user_id');
         $product_id = $request->input('product');
         //删除数据库中用户id和商品id什么什么的
         if (DB::table('cart')->where([['product_id','=',$product_id],['user_id','=',$user_id]])->delete()) {
