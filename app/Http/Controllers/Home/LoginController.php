@@ -61,7 +61,7 @@ class LoginController extends Controller
                     // var_dump(session('username'));
                     return redirect('/')->with('success','登录成功');
                 }else{
-                    return back()->with('error','请进入邮箱激活用户');
+                    return back()->with('error','账户未激活或者已被禁用');
                 }
                
             }else{

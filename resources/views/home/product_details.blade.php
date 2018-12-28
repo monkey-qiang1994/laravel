@@ -170,17 +170,21 @@
 								<sapan style="display:none">{{$product->product_id}}</span>						
 								<script>
 									function img(object){
-										var id=$(object).next().html();
-										$.get('/user/collection/create',{product_id:id},function(data){
-												// alert(data);
-												// console.log(data);
-												if(data==1){
-													$(object).find('img').attr('src','/uploads/brand/heart_h.png');
-													$('#favorito').show().delay(1500).fadeOut();
-												}else{
-													$(object).find('img').attr('src','/uploads/brand/heart.png');
-												}
-										});
+										user = "<?php echo Session::get('user_id',false)?>"
+										if(user==false){
+											alert('您还未登录,请先登录!');
+											window.location.href='/login/create';
+										}else{
+											var id=$(object).next().html();
+											$.get('/user/collection/create',{product_id:id},function(data){
+													if(data==1){
+														$(object).find('img').attr('src','/uploads/brand/heart_h.png');
+														$('#favorito').show().delay(1500).fadeOut();
+													}else{
+														$(object).find('img').attr('src','/uploads/brand/heart.png');
+													}
+											});
+										}
 									}
 								</script>
 								<!-- 收藏结束 -->

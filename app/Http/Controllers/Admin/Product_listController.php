@@ -198,6 +198,7 @@ class Product_listController extends Controller
         //如果有传新图片的话,循环插入新图片
         if($request->hasFile('pics')){
             foreach($request->file('pics') as $file) {
+
                 //初始化名字
                 $name=time()+rand(1,10000);
                 //获取上传文件后缀
@@ -211,7 +212,7 @@ class Product_listController extends Controller
 
             //循环把图片数据插入到数据库中
             foreach($imgs as $v){
-                DB::table('products_images')->update(['product_id'=>$id,'product_img'=>$v]);
+                DB::table('products_images')->insert(['product_id'=>$id,'product_img'=>$v]);
             }
         }
 

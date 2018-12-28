@@ -137,7 +137,7 @@ class CommentController extends Controller
         
         foreach ($res as $v) {
             $product_id = $v->product_id;
-            if ($v->pic_id != null) {
+            if (isset($v->pic_id)) {
                 $pic = DB::table('evaluation_pic')
                 ->where('evaluation_pic.evaluation_id','=',$v->evaluation_id)
                 ->select('evaluation_pic.pic_path')
